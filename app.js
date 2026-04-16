@@ -7,15 +7,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Conexão com o Banco Aiven via Variável de Ambiente
 const db = mysql.createConnection(process.env.DATABASE_URL);
 
-db.connect((err) => {
-    if (err) console.error('Erro BD:', err.message);
-    else console.log('✅ Banco Conectado!');
-});
-
-// Rota de Registro
 app.post('/api/registrar', (req, res) => {
     const { nome, login, senha } = req.body;
     const sql = "INSERT INTO `seguranca.tbUsuarios` (nome, login, senha) VALUES (?, ?, ?)";
@@ -25,7 +18,6 @@ app.post('/api/registrar', (req, res) => {
     });
 });
 
-// Rota de Login
 app.post('/api/login', (req, res) => {
     const { login, senha } = req.body;
     const sql = "SELECT * FROM `seguranca.tbUsuarios` WHERE login = ? AND senha = ?";

@@ -4,47 +4,50 @@
     <meta charset="UTF-8">
     <title>Cadastro - Inventário</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; font-family: 'Poppins', sans-serif; }
-        .bg { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(rgba(47,34,23,0.8), rgba(47,34,23,0.8)), url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1600&auto=format&fit=crop'); background-size: cover; }
-        .card { background: white; padding: 40px; border-radius: 20px; width: 400px; text-align: center; }
-        h2 { font-family: 'Playfair Display', serif; color: #3b2a1a; margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn-reg { width: 100%; padding: 15px; background: #c79a6b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(rgba(47, 34, 23, 0.8), rgba(47, 34, 23, 0.8)), url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1600&auto=format&fit=crop'); background-size: cover; background-position: center; padding: 20px; }
+        .login-card { background: white; width: 100%; max-width: 450px; padding: 45px; border-radius: 20px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3); text-align: center; }
+        h2 { font-family: 'Playfair Display', serif; color: #3b2a1a; font-size: 30px; margin-bottom: 25px; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        label { display: block; font-size: 13px; color: #6b4f3a; margin-bottom: 5px; font-weight: 500; }
+        input { width: 100%; padding: 12px; border: 1px solid #e1d8cf; border-radius: 10px; font-family: 'Poppins', sans-serif; outline: none; box-sizing: border-box; }
+        .btn-reg { width: 100%; padding: 16px; background: #c79a6b; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s; margin-top: 15px; }
+        .btn-reg:hover { background: #b18357; }
+        a { color: #c79a6b; text-decoration: none; font-size: 14px; display: block; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <div class="bg">
-        <div class="card">
+    <div class="login-container">
+        <div class="login-card">
             <h2>Criar Conta</h2>
             <form id="fReg">
-                <input type="text" id="nome" placeholder="Nome Completo" required>
-                <input type="text" id="user" placeholder="Usuário / E-mail" required>
-                <input type="password" id="pass" placeholder="Senha" required>
-                <button type="submit" class="btn-reg">Cadastrar Usuário</button>
+                <div class="form-group"><label>Nome Completo</label><input type="text" id="nome" required></div>
+                <div class="form-group"><label>Usuário</label><input type="text" id="user" required></div>
+                <div class="form-group"><label>Senha de Acesso</label><input type="password" id="pass" required></div>
+                <button type="submit" class="btn-reg">Finalizar Cadastro</button>
             </form>
-            <a href="login.html" style="color:#c79a6b; display:block; margin-top:15px; text-decoration:none;">Já tenho uma conta</a>
+            <a href="login.html">Já possui acesso? Faça login aqui</a>
         </div>
     </div>
     <script>
         document.getElementById('fReg').onsubmit = async (e) => {
             e.preventDefault();
-            const r = await fetch('/api/registrar', {
+            const resp = await fetch('/api/registrar', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     nome: document.getElementById('nome').value,
                     login: document.getElementById('user').value,
                     senha: document.getElementById('pass').value
                 })
             });
-            const res = await r.json();
-            if(res.ok) {
-                alert("Cadastro realizado com sucesso!");
+            const res = await resp.json();
+            if (res.ok) {
+                alert("Cadastro realizado!");
                 window.location.href = 'login.html';
             } else {
-                alert("Erro ao realizar cadastro.");
+                alert("Erro ao cadastrar!");
             }
         };
     </script>
