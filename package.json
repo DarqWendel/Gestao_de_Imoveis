@@ -1,25 +1,14 @@
 {
-  "name": "cadastrodeinventariodeimoveis",
+  "name": "gestao-imoveis",
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/DarqWendel/Gestao_de_Imoveis.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/DarqWendel/Gestao_de_Imoveis/issues"
-  },
-  "homepage": "https://github.com/DarqWendel/Gestao_de_Imoveis#readme",
-  "description": "",
   "dependencies": {
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "mysql2": "^3.22.0"
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mysql2": "^3.9.0",
+    "dotenv": "^16.4.5"
   }
 }
