@@ -9,14 +9,13 @@
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap"
         rel="stylesheet">
     <style>
+       
         .login-container {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            /* NOVA IMAGEM DE FUNDO: Interior de Luxo Sofisticado */
-            background: linear-gradient(rgba(47, 34, 23, 0.75), rgba(47, 34, 23, 0.75)),
-                url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop');
+            background: linear-gradient(rgba(47, 34, 23, 0.75), rgba(47, 34, 23, 0.75)), url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             padding: 20px;
@@ -106,73 +105,101 @@
         }
 
         .registro-container {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #f1ece6;
-}
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #f1ece6;
+        }
 
-.registro-container span {
-    display: block;
-    font-size: 13px;
-    color: #888;
-    margin-bottom: 10px;
-}
+        .registro-container span {
+            display: block;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 10px;
+        }
 
-.btn-secundario {
-    width: 100%;
-    padding: 12px;
-    background: transparent;
-    color: #c79a6b;
-    border: 2px solid #c79a6b;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-}
+        .btn-secundario {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: #c79a6b;
+            border: 2px solid #c79a6b;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-.btn-secundario:hover {
-    background: #c79a6b;
-    color: white;
-}
-
+        .btn-secundario:hover {
+            background: #c79a6b;
+            color: white;
+        }
     </style>
 </head>
 
 <body>
-
     <div class="login-container">
         <div class="login-card">
             <h2>Bem-vindo</h2>
             <p>Acesse o painel administrativo de inventário</p>
 
-            <form action="#">
+            <form id="formLogin">
                 <div class="form-group">
-                    <label>E-mail Corporativo</label>
-                    <input type="email" placeholder="nome@empresa.com" required>
+                    <label>Usuário</label>
+                    <input type="text" id="usuario" placeholder="ex: darquio.oliveira" required>
                 </div>
 
                 <div class="form-group">
                     <label>Senha de Acesso</label>
-                    <input type="password" placeholder="••••••••" required>
+                    <input type="password" id="senha" placeholder="••••••••" required>
                 </div>
 
                 <button type="submit" class="btn-login">Entrar no Sistema</button>
 
                 <div class="registro-container">
                     <span>Ainda não tem acesso?</span>
-                    <button type="button" class="btn-secundario" onclick="window.location.href='cadastrarUsuario.html'">
+                    <button type="button" class="btn-secundario" onclick="window.location.href='cadastro.html'">
                         Cadastrar Usuário
                     </button>
                 </div>
-
             </form>
-
-
 
             <a href="index.html" class="back-home">← Voltar para a página inicial</a>
         </div>
     </div>
+
+    <script>
+        document.getElementById('formLogin').onsubmit = async (e) => {
+            e.preventDefault();
+
+            const dados = {
+                login: document.getElementById('usuario').value,
+                senha: document.getElementById('senha').value
+            };
+
+            try {
+                const resp = await fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                const resultado = await resp.json();
+
+                if (resultado.ok) {
+                   
+                    localStorage.setItem('usuarioLogado', resultado.nome);
+
+                    alert("Bem-vindo " + resultado.nome);
+                    window.location.href = 'dashboard.html'; // REDIRECIONA PARA A NOVA TELA
+                } else {
+                    alert("Login ou senha incorretos!");
+                }
+            } catch (err) {
+                alert("Erro ao conectar ao servidor!");
+            }
+        };
+    </script>
 
 </body>
 

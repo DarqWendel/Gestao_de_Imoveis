@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel de Controle - Inventário</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+        .dashboard-header {
+            background: #2f2217;
+            padding: 20px 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        .welcome-section {
+            padding: 60px 80px;
+            background: #f8f6f3;
+            text-align: center;
+        }
+        .welcome-section h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 40px;
+            color: #3b2a1a;
+        }
+        .user-name { color: #c79a6b; }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px 80px;
+        }
+        .action-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid #eee;
+        }
+        .action-card:hover {
+            transform: translateY(-5px);
+            border-color: #c79a6b;
+        }
+        .btn-logout {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="dashboard-header">
+        <div class="logo">Sistema <span>Premium</span></div>
+        <button class="btn-logout" onclick="logout()">Sair</button>
+    </header>
+
+    <section class="welcome-section">
+        <h1>Olá, <span id="nomeUsuario" class="user-name">Usuário</span>!</h1>
+        <p>O que você deseja gerenciar hoje?</p>
+    </section>
+
+    <div class="actions-grid">
+        <div class="action-card" onclick="alert('Indo para lista de imóveis...')">
+            <h3>🏢 Meus Imóveis</h3>
+            <p>Visualize todos os itens cadastrados.</p>
+        </div>
+        <div class="action-card" onclick="window.location.href='cadastrarImovel.html'">
+            <h3>➕ Novo Registro</h3>
+            <p>Adicione um novo imóvel ao inventário.</p>
+        </div>
+        <div class="action-card" onclick="window.location.href='usuarios.html'">
+            <h3>👥 Usuários</h3>
+            <p>Gerencie quem tem acesso ao sistema.</p>
+        </div>
+    </div>
+
+    <script>
+    
+        const nome = localStorage.getItem('usuarioLogado');
+
+       
+        if (!nome) {
+            window.location.href = 'login.html';
+        } else {
+            document.getElementById('nomeUsuario').innerText = nome;
+        }
+
+        function logout() {
+            localStorage.removeItem('usuarioLogado'); // Limpa a "sessão"
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
