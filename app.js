@@ -1,57 +1,62 @@
+require('dotenv').config(); // Carrega variáveis do arquivo .env local
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
-const app = express();
 
+const app = express();
 app.use(express.json());
 app.use(cors());
 
-const uri = "mysql://avnadmin:AVNS_bSkOd-71tCrWAhg3adi@gestaodeimoveis-darquiowendel2021-1acc.b.aivencloud.com:17599/defaultdb?ssl-mode=REQUIRED";
+// --- CONEXÃO COM O BANCO ---
+// A Vercel vai ler essa variável automaticamente se você configurá-la no painel
+const uri = process.env.DATABASE_URL;
 
 const db = mysql.createConnection(uri);
 
 db.connect((err) => {
     if (err) {
-        console.error('❌ Erro ao conectar na Aiven:', err.message);
+        console.error('❌ Erro de conexão:', err.message);
     } else {
-        console.log('✅ Conectado com sucesso ao banco da Aiven!');
+        console.log('✅ Banco de Dados conectado com sucesso!');
     }
 });
 
-
+// --- ROTA DE CADASTRO ---
 app.post('/registrar', (req, res) => {
-    const { nome, login, senha } = req.body;
-
+    const { nome, email, senha } = req.body;
+    // No seu BD, usamos a coluna 'login' para guardar o e-mail
     const sql = "INSERT INTO `seguranca.tbUsuarios` (nome, login, senha) VALUES (?, ?, ?)";
     
-    db.query(sql, [nome, login, senha], (err) => {
+    db.query(sql, [nome, email, senha], (err) => {
         if (err) {
-            console.error('Erro no SQL de registro:', err);
-            return res.status(500).send({ message: "Erro ao salvar no banco." });
+            console.error('Erro no registro:', err);
+            return res.status(500).send({ message: "Erro ao cadastrar." });
         }
         res.send({ ok: true });
     });
 });
 
+// --- ROTA DE LOGIN ---
 app.post('/login', (req, res) => {
     const { login, senha } = req.body;
     const sql = "SELECT * FROM `seguranca.tbUsuarios` WHERE login = ? AND senha = ?";
     
     db.query(sql, [login, senha], (err, results) => {
         if (err) {
-            console.error('Erro no SQL de login:', err);
+            console.error('Erro no login:', err);
             return res.status(500).send(err);
         }
         
         if (results.length > 0) {
             res.send({ ok: true, nome: results[0].nome });
         } else {
-            res.send({ ok: false, message: "Usuário ou senha inválidos" });
+            res.send({ ok: false, message: "Usuário ou senha incorretos." });
         }
     });
 });
 
-app.listen(3000, () => {
-    console.log("🚀 Servidor rodando na porta 3000");
-    console.log("Acesse o seu projeto pelo navegador!");
+// PORTA DO SERVIDOR
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
