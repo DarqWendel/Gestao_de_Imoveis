@@ -4,53 +4,51 @@
     <meta charset="UTF-8">
     <title>Login - Inventário</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
     <style>
-        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(rgba(47, 34, 23, 0.75), rgba(47, 34, 23, 0.75)), url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop'); background-size: cover; background-position: center; padding: 20px; font-family: 'Poppins', sans-serif; }
-        .login-card { background: white; width: 100%; max-width: 450px; padding: 50px; border-radius: 20px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3); text-align: center; }
-        .login-card h2 { font-family: 'Playfair Display', serif; color: #3b2a1a; font-size: 32px; margin-bottom: 10px; }
+        body { margin: 0; font-family: 'Poppins', sans-serif; }
+        .bg { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(rgba(47,34,23,0.7), rgba(47,34,23,0.7)), url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop'); background-size: cover; }
+        .card { background: white; padding: 50px; border-radius: 20px; width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        h2 { font-family: 'Playfair Display', serif; color: #3b2a1a; font-size: 30px; margin-bottom: 10px; }
         .form-group { text-align: left; margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 13px; color: #6b4f3a; margin-bottom: 8px; font-weight: 500; }
-        .form-group input { width: 100%; padding: 14px; border: 1px solid #e1d8cf; border-radius: 10px; outline: none; box-sizing: border-box; }
-        .btn-login { width: 100%; padding: 16px; background: #c79a6b; color: white; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; }
+        label { display: block; font-size: 13px; color: #6b4f3a; margin-bottom: 8px; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-login { width: 100%; padding: 15px; background: #c79a6b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card">
+    <div class="bg">
+        <div class="card">
             <h2>Bem-vindo</h2>
-            <form id="formLogin">
+            <form id="fLogin">
                 <div class="form-group">
                     <label>Usuário</label>
-                    <input type="text" id="user" required>
+                    <input type="text" id="u" required>
                 </div>
                 <div class="form-group">
                     <label>Senha</label>
-                    <input type="password" id="pass" required>
+                    <input type="password" id="s" required>
                 </div>
                 <button type="submit" class="btn-login">Entrar no Sistema</button>
             </form>
-            <p style="margin-top:20px">Não tem conta? <a href="cadastro.html" style="color:#c79a6b">Cadastre-se</a></p>
+            <p style="margin-top:20px; font-size: 14px;">Não tem conta? <a href="cadastro.html" style="color:#c79a6b; font-weight:600; text-decoration:none;">Cadastre-se aqui</a></p>
         </div>
     </div>
     <script>
-        document.getElementById('formLogin').onsubmit = async (e) => {
+        document.getElementById('fLogin').onsubmit = async (e) => {
             e.preventDefault();
-            const resp = await fetch('/login', {
+            const r = await fetch('/api/login', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    login: document.getElementById('user').value,
-                    senha: document.getElementById('pass').value
-                })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ login: document.getElementById('u').value, senha: document.getElementById('s').value })
             });
-            const res = await resp.json();
-            if (res.ok) {
+            const res = await r.json();
+            if(res.ok) {
                 localStorage.setItem('usuarioLogado', res.nome);
                 alert("Olá, " + res.nome);
                 window.location.href = 'index.html';
             } else {
-                alert("Dados incorretos!");
+                alert("Login ou senha incorretos!");
             }
         };
     </script>
