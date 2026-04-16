@@ -1,208 +1,53 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
-    <title>Cadastro de Usuário - Inventário de Imóveis</title>
+    <title>Cadastro - Inventário</title>
     <link rel="stylesheet" href="style.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
     <style>
-        .register-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-           
-            background: linear-gradient(rgba(47, 34, 23, 0.8), rgba(47, 34, 23, 0.8)),
-                url('https://images.unsplash.com/photo-1582407947304-fd86f028f716?q=80&w=1600&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            padding: 40px 20px;
-        }
-
-        .register-card {
-            background: white;
-            width: 100%;
-            max-width: 500px;
-            padding: 45px;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-            text-align: center;
-        }
-
-        .register-card h2 {
-            font-family: 'Playfair Display', serif;
-            color: #3b2a1a;
-            font-size: 30px;
-            margin-bottom: 8px;
-        }
-
-        .register-card p {
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 18px;
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            color: #6b4f3a;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #e1d8cf;
-            border-radius: 10px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
-            transition: 0.3s;
-            outline: none;
-        }
-
-        .form-group input:focus {
-            border-color: #c79a6b;
-            box-shadow: 0 0 0 3px rgba(199, 154, 107, 0.1);
-        }
-
-        .btn-register {
-            width: 100%;
-            padding: 16px;
-            background: #c79a6b;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 25px;
-        }
-
-        .btn-register:hover {
-            background: #b18357;
-            transform: translateY(-2px);
-        }
-
-        .footer-links {
-            margin-top: 25px;
-            font-size: 14px;
-            color: #888;
-        }
-
-        .footer-links a {
-            color: #c79a6b;
-            text-decoration: none;
-            font-weight: 500;
-            transition: 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: #3b2a1a;
-            text-decoration: underline;
-        }
-
-        
-        @media (max-width: 480px) {
-            .register-card {
-                padding: 30px 20px;
-            }
-        }
+        /* Mesmo estilo do login para manter o padrão */
+        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(rgba(47, 34, 23, 0.8), rgba(47, 34, 23, 0.8)), url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1600&auto=format&fit=crop'); background-size: cover; background-position: center; font-family: 'Poppins', sans-serif; }
+        .login-card { background: white; width: 100%; max-width: 450px; padding: 50px; border-radius: 20px; text-align: center; }
+        h2 { font-family: 'Playfair Display', serif; color: #3b2a1a; margin-bottom: 20px; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        input { width: 100%; padding: 12px; border: 1px solid #e1d8cf; border-radius: 10px; box-sizing: border-box; }
+        .btn-reg { width: 100%; padding: 16px; background: #c79a6b; color: white; border: none; border-radius: 10px; cursor: pointer; }
     </style>
 </head>
-
 <body>
-
-    <div class="register-container">
-        <div class="register-card">
+    <div class="login-container">
+        <div class="login-card">
             <h2>Criar Conta</h2>
-            <p>Cadastre-se para gerenciar o inventário de imóveis</p>
-
-            <form id="registerForm">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Nome Completo</label>
-                        <input type="text" id="nome" placeholder="Digite seu nome" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nome de Usuário (Login)</label>
-                        <input type="text" id="login" placeholder="Ex: joao.silva" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Senha de Acesso</label>
-                        <input type="password" id="senha" placeholder="Crie uma senha forte" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Confirmar Senha</label>
-                        <input type="password" id="confirmar_senha" placeholder="Repita a senha" required>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-register">Finalizar Cadastro</button>
+            <form id="formReg">
+                <div class="form-group"><input type="text" id="n" placeholder="Nome Completo" required></div>
+                <div class="form-group"><input type="text" id="u" placeholder="Usuário/E-mail" required></div>
+                <div class="form-group"><input type="password" id="s" placeholder="Senha" required></div>
+                <button type="submit" class="btn-reg">Cadastrar</button>
             </form>
-
-            <div class="footer-links">
-                Já possui acesso? <a href="login.html">Faça login aqui</a>
-                <br><br>
-                <a href="index.html">← Voltar para a Início</a>
-            </div>
+            <a href="login.html" style="color:#c79a6b; display:block; margin-top:15px">Já tenho conta</a>
         </div>
     </div>
-
     <script>
-        document.getElementById('registerForm').addEventListener('submit', function (e) {
+        document.getElementById('formReg').onsubmit = async (e) => {
             e.preventDefault();
-
-            const senha = document.getElementById('senha').value;
-            const confirma = document.getElementById('confirmar_senha').value;
-
-            if (senha !== confirma) {
-                alert('As senhas não coincidem!');
-                return;
-            }
-
-            alert('Cadastro enviado com sucesso! (Aguardando integração com o Banco de Dados)');
-           
-        });
-    </script>
-
-    <script>
-        document.getElementById('registerForm').onsubmit = async (e) => {
-            e.preventDefault();
-
-            const dados = {
-                nome: document.getElementById('nome').value,
-                login: document.getElementById('login').value,
-                senha: document.getElementById('senha').value
-            };
-
-            const resp = await fetch('http://localhost:3000/registrar', {
+            const resp = await fetch('/registrar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dados)
+                body: JSON.stringify({
+                    nome: document.getElementById('n').value,
+                    login: document.getElementById('u').value,
+                    senha: document.getElementById('s').value
+                })
             });
-
-            if (resp.ok) {
-                alert("Usuário cadastrado!");
+            const res = await resp.json();
+            if (res.ok) {
+                alert("Cadastro feito!");
                 window.location.href = 'login.html';
+            } else {
+                alert("Erro ao cadastrar!");
             }
         };
     </script>
-    
 </body>
-
 </html>

@@ -2,182 +2,55 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Inventário de Imóveis</title>
+    <title>Login - Inventário</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
-     <style>
-       
-        .login-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(rgba(47, 34, 23, 0.75), rgba(47, 34, 23, 0.75)), url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            padding: 20px;
-        }
-
-        .login-card {
-            background: white;
-            width: 100%;
-            max-width: 450px;
-            padding: 50px;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-            text-align: center;
-        }
-
-        .login-card h2 {
-            font-family: 'Playfair Display', serif;
-            color: #3b2a1a;
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .login-card p {
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 35px;
-        }
-
-        .form-group {
-            text-align: left;
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            color: #6b4f3a;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #e1d8cf;
-            border-radius: 10px;
-            font-family: 'Poppins', sans-serif;
-            transition: 0.3s;
-            outline: none;
-        }
-
-        .form-group input:focus {
-            border-color: #c79a6b;
-            box-shadow: 0 0 0 3px rgba(199, 154, 107, 0.1);
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 16px;
-            background: #c79a6b;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-
-        .btn-login:hover {
-            background: #b18357;
-            transform: translateY(-2px);
-        }
-
-        .back-home {
-            display: inline-block;
-            margin-top: 25px;
-            color: #c79a6b;
-            text-decoration: none;
-            font-size: 14px;
-            transition: 0.3s;
-        }
-
-        .back-home:hover {
-            color: #3b2a1a;
-        }
-
-        .registro-container {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #f1ece6;
-        }
-
-        .registro-container span {
-            display: block;
-            font-size: 13px;
-            color: #888;
-            margin-bottom: 10px;
-        }
-
-        .btn-secundario {
-            width: 100%;
-            padding: 12px;
-            background: transparent;
-            color: #c79a6b;
-            border: 2px solid #c79a6b;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-secundario:hover {
-            background: #c79a6b;
-            color: white;
-        }
+    <style>
+        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(rgba(47, 34, 23, 0.75), rgba(47, 34, 23, 0.75)), url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop'); background-size: cover; background-position: center; padding: 20px; font-family: 'Poppins', sans-serif; }
+        .login-card { background: white; width: 100%; max-width: 450px; padding: 50px; border-radius: 20px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3); text-align: center; }
+        .login-card h2 { font-family: 'Playfair Display', serif; color: #3b2a1a; font-size: 32px; margin-bottom: 10px; }
+        .form-group { text-align: left; margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; color: #6b4f3a; margin-bottom: 8px; font-weight: 500; }
+        .form-group input { width: 100%; padding: 14px; border: 1px solid #e1d8cf; border-radius: 10px; outline: none; box-sizing: border-box; }
+        .btn-login { width: 100%; padding: 16px; background: #c79a6b; color: white; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="login-container">
         <div class="login-card">
             <h2>Bem-vindo</h2>
-            <p>Acesse o painel administrativo de inventário</p>
-            <form id="meuForm">
+            <form id="formLogin">
                 <div class="form-group">
                     <label>Usuário</label>
-                    <input type="text" id="campoLogin" placeholder="ex: darquio.oliveira" required>
+                    <input type="text" id="user" required>
                 </div>
                 <div class="form-group">
-                    <label>Senha de Acesso</label>
-                    <input type="password" id="campoSenha" placeholder="••••••••" required>
+                    <label>Senha</label>
+                    <input type="password" id="pass" required>
                 </div>
                 <button type="submit" class="btn-login">Entrar no Sistema</button>
-                <div class="registro-container">
-                    <span>Ainda não tem acesso?</span>
-                    <button type="button" class="btn-secundario" onclick="window.location.href='cadastro.html'">Cadastrar Usuário</button>
-                </div>
             </form>
-            <a href="index.html" style="color: #c79a6b; text-decoration: none; display: block; margin-top: 20px;">← Voltar ao início</a>
+            <p style="margin-top:20px">Não tem conta? <a href="cadastro.html" style="color:#c79a6b">Cadastre-se</a></p>
         </div>
     </div>
-
     <script>
-        document.getElementById('meuForm').onsubmit = async (e) => {
+        document.getElementById('formLogin').onsubmit = async (e) => {
             e.preventDefault();
-            const dados = {
-                login: document.getElementById('campoLogin').value,
-                senha: document.getElementById('campoSenha').value
-            };
-
             const resp = await fetch('/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dados)
+                body: JSON.stringify({
+                    login: document.getElementById('user').value,
+                    senha: document.getElementById('pass').value
+                })
             });
-
-            const resultado = await resp.json();
-            if (resultado.ok) {
-                localStorage.setItem('usuarioLogado', resultado.nome);
-                alert("Bem-vindo " + resultado.nome);
+            const res = await resp.json();
+            if (res.ok) {
+                localStorage.setItem('usuarioLogado', res.nome);
+                alert("Olá, " + res.nome);
                 window.location.href = 'index.html';
             } else {
-                alert("Login ou senha incorretos!");
+                alert("Dados incorretos!");
             }
         };
     </script>
