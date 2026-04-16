@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <title>Login - Inventário de Imóveis</title>
     <link rel="stylesheet" href="style.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap"
-        rel="stylesheet">
-    <style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+     <style>
        
         .login-container {
             min-height: 100vh;
@@ -136,71 +133,53 @@
         }
     </style>
 </head>
-
 <body>
     <div class="login-container">
         <div class="login-card">
             <h2>Bem-vindo</h2>
             <p>Acesse o painel administrativo de inventário</p>
-
-            <form id="formLogin">
+            <form id="meuForm">
                 <div class="form-group">
                     <label>Usuário</label>
-                    <input type="text" id="usuario" placeholder="ex: darquio.oliveira" required>
+                    <input type="text" id="campoLogin" placeholder="ex: darquio.oliveira" required>
                 </div>
-
                 <div class="form-group">
                     <label>Senha de Acesso</label>
-                    <input type="password" id="senha" placeholder="••••••••" required>
+                    <input type="password" id="campoSenha" placeholder="••••••••" required>
                 </div>
-
                 <button type="submit" class="btn-login">Entrar no Sistema</button>
-
                 <div class="registro-container">
                     <span>Ainda não tem acesso?</span>
-                    <button type="button" class="btn-secundario" onclick="window.location.href='cadastro.html'">
-                        Cadastrar Usuário
-                    </button>
+                    <button type="button" class="btn-secundario" onclick="window.location.href='cadastro.html'">Cadastrar Usuário</button>
                 </div>
             </form>
-
-            <a href="index.html" class="back-home">← Voltar para a página inicial</a>
+            <a href="index.html" style="color: #c79a6b; text-decoration: none; display: block; margin-top: 20px;">← Voltar ao início</a>
         </div>
     </div>
 
     <script>
-        document.getElementById('formLogin').onsubmit = async (e) => {
+        document.getElementById('meuForm').onsubmit = async (e) => {
             e.preventDefault();
-
             const dados = {
-                login: document.getElementById('usuario').value,
-                senha: document.getElementById('senha').value
+                login: document.getElementById('campoLogin').value,
+                senha: document.getElementById('campoSenha').value
             };
 
-            try {
-                const resp = await fetch('http://localhost:3000/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dados)
-                });
+            const resp = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
 
-                const resultado = await resp.json();
-
-                if (resultado.ok) {
-                   
-                    localStorage.setItem('usuarioLogado', resultado.nome);
-
-                    alert("Bem-vindo " + resultado.nome);
-                    window.location.href = 'dashboard.html'; // REDIRECIONA PARA A NOVA TELA
-                } else {
-                    alert("Login ou senha incorretos!");
-                }
-            } catch (err) {
-                alert("Erro ao conectar ao servidor!");
+            const resultado = await resp.json();
+            if (resultado.ok) {
+                localStorage.setItem('usuarioLogado', resultado.nome);
+                alert("Bem-vindo " + resultado.nome);
+                window.location.href = 'index.html';
+            } else {
+                alert("Login ou senha incorretos!");
             }
         };
     </script>
-
 </body>
-
 </html>
