@@ -1,11 +1,16 @@
 {
   "version": 2,
   "builds": [
-    { "src": "app.js", "use": "@vercel/node" }
+    { "src": "app.js", "use": "@vercel/node" },
+    { "src": "*.html", "use": "@vercel/static" },
+    { "src": "*.css", "use": "@vercel/static" },
+    { "src": "assets/**", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/registrar", "dest": "app.js" },
     { "src": "/login", "dest": "app.js" },
-    { "src": "/(.*)", "dest": "/$1" }
+    { "src": "/usuarios", "dest": "app.js" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "status": 404, "dest": "404.html" }
   ]
 }
