@@ -1,15 +1,17 @@
+require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
-require('dotenv').config();
-
 const app = express();
+
 app.use(express.json());
 app.use(cors());
 
+// Conecta no banco usando a URI que você salvou na Vercel
 const db = mysql.createConnection(process.env.DATABASE_URL);
 
-app.post('/api/registrar', (req, res) => {
+// Rota de Registro
+app.post('/registrar', (req, res) => {
     const { nome, login, senha } = req.body;
     const sql = "INSERT INTO `seguranca.tbUsuarios` (nome, login, senha) VALUES (?, ?, ?)";
     db.query(sql, [nome, login, senha], (err) => {
@@ -18,7 +20,8 @@ app.post('/api/registrar', (req, res) => {
     });
 });
 
-app.post('/api/login', (req, res) => {
+// Rota de Login
+app.post('/login', (req, res) => {
     const { login, senha } = req.body;
     const sql = "SELECT * FROM `seguranca.tbUsuarios` WHERE login = ? AND senha = ?";
     db.query(sql, [login, senha], (err, results) => {
