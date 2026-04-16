@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title>Login - Inventário de Imóveis</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap"
+        rel="stylesheet">
     <style>
         .login-container {
             min-height: 100vh;
@@ -12,8 +15,8 @@
             align-items: center;
             justify-content: center;
             /* NOVA IMAGEM DE FUNDO: Interior de Luxo Sofisticado */
-            background: linear-gradient(rgba(47, 34, 23, 0.75), rgba(47, 34, 23, 0.75)), 
-                        url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop');
+            background: linear-gradient(rgba(47, 34, 23, 0.75), rgba(47, 34, 23, 0.75)),
+                url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             padding: 20px;
@@ -25,7 +28,7 @@
             max-width: 450px;
             padding: 50px;
             border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
             text-align: center;
         }
 
@@ -101,8 +104,41 @@
         .back-home:hover {
             color: #3b2a1a;
         }
+
+        .registro-container {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #f1ece6;
+}
+
+.registro-container span {
+    display: block;
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.btn-secundario {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    color: #c79a6b;
+    border: 2px solid #c79a6b;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-secundario:hover {
+    background: #c79a6b;
+    color: white;
+}
+
     </style>
 </head>
+
 <body>
 
     <div class="login-container">
@@ -122,11 +158,22 @@
                 </div>
 
                 <button type="submit" class="btn-login">Entrar no Sistema</button>
+
+                <div class="registro-container">
+                    <span>Ainda não tem acesso?</span>
+                    <button type="button" class="btn-secundario" onclick="window.location.href='cadastrarUsuario.html'">
+                        Cadastrar Usuário
+                    </button>
+                </div>
+
             </form>
+
+
 
             <a href="index.html" class="back-home">← Voltar para a página inicial</a>
         </div>
     </div>
 
 </body>
+
 </html>
