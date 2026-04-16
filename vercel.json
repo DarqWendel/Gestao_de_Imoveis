@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "rewrites": [
-    { "source": "/login", "destination": "app.js" },
-    { "source": "/registrar", "destination": "app.js" }
+  "builds": [{ "src": "app.js", "use": "@vercel/node" }],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "app.js" }
   ]
 }
