@@ -5,47 +5,158 @@
     <title>Criar Conta</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; font-family: 'Poppins', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(rgba(47,34,23,0.7), rgba(47,34,23,0.7)), url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop'); background-size: cover; }
-        .card { background: white; padding: 40px; border-radius: 30px; width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); text-align: center; }
-        h2 { font-family: 'Playfair Display', serif; color: #3b2a1a; font-size: 32px; margin-bottom: 30px; }
-        .form-group { text-align: left; margin-bottom: 15px; }
-        label { display: block; font-size: 14px; color: #8b5e3c; margin-bottom: 5px; }
-        input { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; outline: none; background: #f8faff; }
-        .btn { width: 100%; padding: 18px; background: #b08968; color: white; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; margin-top: 20px; font-weight: 500; }
-        a { color: #b08968; text-decoration: none; display: block; margin-top: 20px; font-size: 14px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(rgba(47,34,23,0.72), rgba(47,34,23,0.72)),
+                        url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+        .card {
+            background: white;
+            padding: 45px 40px;
+            border-radius: 24px;
+            width: 420px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+            text-align: center;
+        }
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: #3b2a1a;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: #999;
+            font-size: 13px;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: #8b5e3c;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        input {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1.5px solid #e8e0d8;
+            border-radius: 10px;
+            box-sizing: border-box;
+            outline: none;
+            background: #faf8f6;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #333;
+            transition: border-color 0.2s;
+        }
+        input:focus { border-color: #b08968; background: white; }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #b08968;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            margin-top: 8px;
+            font-weight: 500;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn:hover { background: #9a7455; transform: translateY(-1px); }
+        .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        .link-login {
+            color: #b08968;
+            text-decoration: none;
+            display: block;
+            margin-top: 20px;
+            font-size: 13px;
+        }
+        .link-login:hover { text-decoration: underline; }
+        .msg-erro {
+            background: #fde8e8;
+            color: #c0392b;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+            text-align: left;
+        }
+        .msg-ok {
+            background: #e8f5e9;
+            color: #27ae60;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
     <div class="card">
         <h2>Criar Conta</h2>
-        <form id="meuFormCadastro">
+        <p class="subtitle">Preencha os dados para acessar o sistema</p>
+
+        <div class="msg-erro" id="msgErro"></div>
+        <div class="msg-ok" id="msgOk"></div>
+
+        <form id="formCadastro">
             <div class="form-group">
                 <label>Nome Completo</label>
-                <input type="text" id="nomeInput" required>
+                <input type="text" id="nome" placeholder="Seu nome completo" required>
+            </div>
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" id="email" placeholder="seu@email.com" required>
             </div>
             <div class="form-group">
                 <label>Usuário</label>
-                <input type="text" id="usuarioInput" required>
+                <input type="text" id="usuario" placeholder="Nome de usuário" required>
             </div>
             <div class="form-group">
-                <label>Senha de Acesso</label>
-                <input type="password" id="senhaInput" required>
+                <label>Senha</label>
+                <input type="password" id="senha" placeholder="Mínimo 6 caracteres" required>
             </div>
-            <button type="submit" class="btn">Finalizar Cadastro</button>
+            <button type="submit" class="btn" id="btnCadastrar">Criar Conta</button>
         </form>
-        <a href="login.html">Já possui acesso? Faça login aqui</a>
+
+        <a href="login.html" class="link-login">Já possui acesso? Faça login aqui</a>
     </div>
 
     <script>
-        document.getElementById('meuFormCadastro').onsubmit = async (e) => {
+        document.getElementById('formCadastro').onsubmit = async (e) => {
             e.preventDefault();
-            const btn = e.target.querySelector('button');
-            btn.innerText = "Carregando...";
+            const btn = document.getElementById('btnCadastrar');
+            const msgErro = document.getElementById('msgErro');
+            const msgOk = document.getElementById('msgOk');
+
+            msgErro.style.display = 'none';
+            msgOk.style.display = 'none';
+            btn.disabled = true;
+            btn.innerText = 'Criando conta...';
 
             const dados = {
-                nome: document.getElementById('nomeInput').value,
-                login: document.getElementById('usuarioInput').value,
-                senha: document.getElementById('senhaInput').value
+                nome: document.getElementById('nome').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                login: document.getElementById('usuario').value.trim(),
+                senha: document.getElementById('senha').value
             };
 
             try {
@@ -56,16 +167,21 @@
                 });
 
                 const res = await resp.json();
+
                 if (res.ok) {
-                    alert("Conta criada com sucesso!");
-                    window.location.href = 'login.html';
+                    msgOk.innerText = '✓ Conta criada com sucesso! Redirecionando...';
+                    msgOk.style.display = 'block';
+                    setTimeout(() => window.location.href = 'login.html', 1500);
                 } else {
-                    alert("Erro ao cadastrar.");
+                    msgErro.innerText = '✗ ' + (res.error || 'Erro ao cadastrar.');
+                    msgErro.style.display = 'block';
                 }
             } catch (err) {
-                alert("Erro de conexão com o servidor.");
+                msgErro.innerText = '✗ Erro de conexão com o servidor.';
+                msgErro.style.display = 'block';
             } finally {
-                btn.innerText = "Finalizar Cadastro";
+                btn.disabled = false;
+                btn.innerText = 'Criar Conta';
             }
         };
     </script>
