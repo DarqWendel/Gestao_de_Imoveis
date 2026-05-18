@@ -241,22 +241,20 @@ app.get('/api/imoveis/:id', async (req, res) => {
 });
 
 app.post('/api/imoveis', async (req, res) => {
-    const { endereco, valor, area, proprietario_id, imovel_tipo_id, atualizado_por } = req.body;
+    const { endereco, valor, area, imovel_tipo_id } = req.body;
 
-    if (!endereco || !imovel_tipo_id || !proprietario_id || !atualizado_por)
-        return res.status(400).json({ ok: false, error: 'Campos obrigatórios: endereço, tipo, proprietário e atualizado por.' });
+    if (!endereco || !imovel_tipo_id)
+        return res.status(400).json({ ok: false, error: 'Campos obrigatórios: endereço e tipo.' });
 
     try {
         const [result] = await pool.query(
-            `INSERT INTO tblmovel (endereco, valor, area, proprietario_id, imovel_tipo_id, atualizado_por)
-             VALUES (?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO tblmovel (endereco, valor, area, imovel_tipo_id)
+             VALUES (?, ?, ?, ?)`,
             [
                 endereco,
-                valor          || null,
-                area           || null,
-                proprietario_id,
-                imovel_tipo_id,
-                atualizado_por
+                valor || null,
+                area  || null,
+                imovel_tipo_id
             ]
         );
         res.json({ ok: true, id: result.insertId, message: 'Imóvel cadastrado com sucesso!' });
@@ -266,23 +264,21 @@ app.post('/api/imoveis', async (req, res) => {
 });
 
 app.put('/api/imoveis/:id', async (req, res) => {
-    const { endereco, valor, area, proprietario_id, imovel_tipo_id, atualizado_por } = req.body;
+    const { endereco, valor, area, imovel_tipo_id } = req.body;
 
-    if (!endereco || !imovel_tipo_id || !proprietario_id || !atualizado_por)
-        return res.status(400).json({ ok: false, error: 'Campos obrigatórios: endereço, tipo, proprietário e atualizado por.' });
+    if (!endereco || !imovel_tipo_id)
+        return res.status(400).json({ ok: false, error: 'Campos obrigatórios: endereço e tipo.' });
 
     try {
         const [result] = await pool.query(
             `UPDATE tblmovel SET
-                endereco=?, valor=?, area=?, proprietario_id=?, imovel_tipo_id=?, atualizado_por=?
+                endereco=?, valor=?, area=?, imovel_tipo_id=?
              WHERE imovel_id=?`,
             [
                 endereco,
-                valor          || null,
-                area           || null,
-                proprietario_id,
+                valor || null,
+                area  || null,
                 imovel_tipo_id,
-                atualizado_por,
                 req.params.id
             ]
         );
