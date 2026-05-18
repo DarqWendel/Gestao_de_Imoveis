@@ -213,12 +213,12 @@
           <tr>
             <th class="col-check"><input type="checkbox" id="checkAll" onchange="toggleAll(this)"></th>
             <th class="col-id">ID</th>
-            <th>Código</th>
-            <th>Descrição</th>
+            <th>Endereço</th>
             <th>Tipo</th>
-            <th>Status</th>
-            <th>Cidade / UF</th>
+            <th>Área (m²)</th>
             <th>Valor (R$)</th>
+            <th>Proprietário ID</th>
+            <th>Atualizado em</th>
           </tr>
         </thead>
         <tbody id="tbody">
@@ -252,45 +252,21 @@
     <div class="alert alert-error" id="msgErro"></div>
     <div class="alert alert-ok"   id="msgOk"></div>
 
+    <div class="form-group">
+      <label>Endereço *</label>
+      <input type="text" id="fEndereco" placeholder="Ex: Rua das Flores, 123, Centro">
+    </div>
+
     <div class="form-row-2">
-      <div class="form-group">
-        <label>Código *</label>
-        <input type="text" id="fCodigo" placeholder="Ex: AP-001">
-      </div>
       <div class="form-group">
         <label>Tipo *</label>
         <select id="fTipo">
-          <option value="Apartamento">Apartamento</option>
-          <option value="Casa">Casa</option>
-          <option value="Terreno">Terreno</option>
-          <option value="Sala Comercial">Sala Comercial</option>
-          <option value="Outro">Outro</option>
+          <option value="">Carregando...</option>
         </select>
       </div>
-    </div>
-
-    <div class="form-group">
-      <label>Descrição *</label>
-      <input type="text" id="fDescricao" placeholder="Ex: Apartamento 2 quartos no Centro">
-    </div>
-
-    <div class="form-row-2">
       <div class="form-group">
-        <label>Cidade</label>
-        <input type="text" id="fCidade" placeholder="Ex: Fortaleza">
-      </div>
-      <div class="form-group">
-        <label>Estado (UF)</label>
-        <select id="fEstado">
-          <option value="">—</option>
-          <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
-          <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
-          <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
-          <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
-          <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
-          <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
-          <option>SP</option><option>SE</option><option>TO</option>
-        </select>
+        <label>Área (m²)</label>
+        <input type="number" id="fArea" placeholder="Ex: 75.50" min="0" step="0.01">
       </div>
     </div>
 
@@ -300,13 +276,8 @@
         <input type="number" id="fValor" placeholder="Ex: 350000.00" min="0" step="0.01">
       </div>
       <div class="form-group">
-        <label>Status *</label>
-        <select id="fStatus">
-          <option value="Disponível">Disponível</option>
-          <option value="Alugado">Alugado</option>
-          <option value="Vendido">Vendido</option>
-          <option value="Inativo">Inativo</option>
-        </select>
+        <label>Proprietário ID</label>
+        <input type="number" id="fProprietario" placeholder="Ex: 1" min="1" step="1">
       </div>
     </div>
 
@@ -342,8 +313,26 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     if (!localStorage.getItem('usuarioLogado')) { window.location.href = 'login.html'; return; }
+    carregarTipos();
     carregarImoveis();
   });
+
+  async function carregarTipos() {
+    try {
+      const res  = await fetch('/api/imoveis/tipos');
+      const data = await res.json();
+      const sel  = document.getElementById('fTipo');
+      if (data.ok && data.data.length > 0) {
+        sel.innerHTML = data.data.map(t =>
+          `<option value="${t.imovel_tipo_id}">${esc(t.descricao)}</option>`
+        ).join('');
+      } else {
+        sel.innerHTML = '<option value="">Nenhum tipo cadastrado</option>';
+      }
+    } catch {
+      document.getElementById('fTipo').innerHTML = '<option value="">Erro ao carregar tipos</option>';
+    }
+  }
 
   async function carregarImoveis() {
     try {
@@ -354,14 +343,14 @@
     } catch { emptyState('Erro de conexão com o servidor.'); }
   }
 
-  function statusClass(s) {
-    const m = { 'Disponível':'disponivel','Alugado':'alugado','Vendido':'vendido','Inativo':'inativo' };
-    return m[s] || 'inativo';
-  }
-
   function fmtVal(v) {
     if (!v && v !== 0) return '—';
     return 'R$ ' + parseFloat(v).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+  }
+
+  function fmtData(d) {
+    if (!d) return '—';
+    return new Date(d).toLocaleDateString('pt-BR');
   }
 
   function renderTabela() {
@@ -372,22 +361,20 @@
     if (!imoveis.length) { emptyState('Nenhum imóvel cadastrado ainda.'); return; }
 
     tbody.innerHTML = imoveis.map(im => {
-      const local = [im.cidade, im.estado].filter(Boolean).join(' / ') || '—';
-      const valor = im.valor_venda ? fmtVal(im.valor_venda) : (im.valor_aluguel ? fmtVal(im.valor_aluguel) : '—');
       return `
-      <tr data-id="${im.id}" class="${selecionados.has(im.id) ? 'selected' : ''}">
+      <tr data-id="${im.imovel_id}" class="${selecionados.has(im.imovel_id) ? 'selected' : ''}">
         <td class="col-check">
-          <input type="checkbox" class="row-check" value="${im.id}"
-            ${selecionados.has(im.id) ? 'checked' : ''}
-            onchange="toggleSelect(${im.id}, this.checked)">
+          <input type="checkbox" class="row-check" value="${im.imovel_id}"
+            ${selecionados.has(im.imovel_id) ? 'checked' : ''}
+            onchange="toggleSelect(${im.imovel_id}, this.checked)">
         </td>
-        <td class="col-id">${im.id}</td>
-        <td><strong style="font-weight:600">${esc(im.codigo)}</strong></td>
-        <td>${esc(im.descricao)}</td>
-        <td style="color:#7a6a5a">${esc(im.tipo)}</td>
-        <td><span class="badge badge-${statusClass(im.status)}">${esc(im.status)}</span></td>
-        <td>${esc(local)}</td>
-        <td>${valor}</td>
+        <td class="col-id">${im.imovel_id}</td>
+        <td><strong style="font-weight:600">${esc(im.endereco)}</strong></td>
+        <td style="color:#7a6a5a">${esc(im.tipo_descricao ?? '—')}</td>
+        <td>${im.area ? im.area + ' m²' : '—'}</td>
+        <td>${fmtVal(im.valor)}</td>
+        <td>${im.proprietario_id ?? '—'}</td>
+        <td style="font-size:12px;color:#9a8a7a">${fmtData(im.atualizado_em)}</td>
       </tr>`;
     }).join('');
 
@@ -458,17 +445,14 @@
       const data = await res.json();
       if (!data.ok) { toast('Erro ao carregar imóvel.', 'erro'); return; }
       const im = data.data;
-      modoEdicao = true; idEdicao = im.id; limparForm();
+      modoEdicao = true; idEdicao = im.imovel_id; limparForm();
       document.getElementById('modalTitulo').textContent = 'Editar Imóvel';
       document.getElementById('modalDesc').textContent   = 'Altere os dados do imóvel.';
-      document.getElementById('fCodigo').value   = im.codigo;
-      document.getElementById('fDescricao').value= im.descricao;
-      document.getElementById('fTipo').value     = im.tipo;
-      document.getElementById('fStatus').value   = im.status;
-      document.getElementById('fCidade').value   = im.cidade ?? '';
-      document.getElementById('fEstado').value   = im.estado ?? '';
-      // exibe o maior valor disponível
-      document.getElementById('fValor').value    = im.valor_venda ?? im.valor_aluguel ?? '';
+      document.getElementById('fEndereco').value    = im.endereco ?? '';
+      document.getElementById('fTipo').value        = im.imovel_tipo_id ?? '';
+      document.getElementById('fArea').value        = im.area ?? '';
+      document.getElementById('fValor').value       = im.valor ?? '';
+      document.getElementById('fProprietario').value= im.proprietario_id ?? '';
       document.getElementById('modalForm').classList.add('open');
     } catch { toast('Erro de conexão ao carregar imóvel.', 'erro'); }
   }
@@ -476,37 +460,27 @@
   function fecharModal() { document.getElementById('modalForm').classList.remove('open'); limparForm(); }
 
   function limparForm() {
-    ['fCodigo','fDescricao','fCidade','fValor'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('fTipo').value   = 'Apartamento';
-    document.getElementById('fStatus').value = 'Disponível';
-    document.getElementById('fEstado').value = '';
+    ['fEndereco','fArea','fValor','fProprietario'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('msgErro').style.display = 'none';
     document.getElementById('msgOk').style.display   = 'none';
   }
 
   async function salvar() {
-    const btn = document.getElementById('btnSalvar');
+    const btn    = document.getElementById('btnSalvar');
     const msgErro = document.getElementById('msgErro');
     const msgOk   = document.getElementById('msgOk');
     msgErro.style.display = msgOk.style.display = 'none';
 
-    const valor = document.getElementById('fValor').value || null;
-    const status = document.getElementById('fStatus').value;
-
-    // Coloca o valor no campo certo baseado no status
     const payload = {
-      codigo:        document.getElementById('fCodigo').value.trim(),
-      descricao:     document.getElementById('fDescricao').value.trim(),
-      tipo:          document.getElementById('fTipo').value,
-      status,
-      cidade:        document.getElementById('fCidade').value.trim() || null,
-      estado:        document.getElementById('fEstado').value || null,
-      valor_venda:   status === 'Vendido'  ? valor : null,
-      valor_aluguel: status === 'Alugado'  ? valor : null,
+      endereco:        document.getElementById('fEndereco').value.trim(),
+      imovel_tipo_id:  document.getElementById('fTipo').value,
+      area:            document.getElementById('fArea').value       || null,
+      valor:           document.getElementById('fValor').value      || null,
+      proprietario_id: document.getElementById('fProprietario').value || null,
     };
 
-    if (!payload.codigo || !payload.descricao) {
-      msgErro.textContent = 'Código e Descrição são obrigatórios.';
+    if (!payload.endereco || !payload.imovel_tipo_id) {
+      msgErro.textContent = 'Endereço e Tipo são obrigatórios.';
       msgErro.style.display = 'block'; return;
     }
 
@@ -535,8 +509,8 @@
 
   function confirmarExcluir() {
     const nomes = [...selecionados].map(id => {
-      const im = imoveis.find(x => x.id === id);
-      return im ? `"${im.codigo}"` : `ID ${id}`;
+      const im = imoveis.find(x => x.imovel_id === id);
+      return im ? `"${im.endereco.substring(0, 30)}…"` : `ID ${id}`;
     }).join(', ');
     document.getElementById('nomeExcluir').textContent = nomes;
     document.getElementById('modalConfirm').classList.add('open');

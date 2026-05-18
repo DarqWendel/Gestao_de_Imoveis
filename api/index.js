@@ -49,31 +49,7 @@ async function initDB() {
             ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS perfil VARCHAR(100) DEFAULT 'Usuário'
         `).catch(() => {});
 
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS imoveis (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                codigo VARCHAR(50) NOT NULL UNIQUE,
-                descricao VARCHAR(255) NOT NULL,
-                tipo ENUM('Apartamento','Casa','Terreno','Sala Comercial','Galpão','Outro') NOT NULL DEFAULT 'Apartamento',
-                status ENUM('Disponível','Alugado','Vendido','Em Reforma','Inativo') NOT NULL DEFAULT 'Disponível',
-                area DECIMAL(10,2) DEFAULT NULL,
-                quartos TINYINT UNSIGNED DEFAULT NULL,
-                banheiros TINYINT UNSIGNED DEFAULT NULL,
-                vagas TINYINT UNSIGNED DEFAULT NULL,
-                valor_venda DECIMAL(15,2) DEFAULT NULL,
-                valor_aluguel DECIMAL(15,2) DEFAULT NULL,
-                cep VARCHAR(10) DEFAULT NULL,
-                logradouro VARCHAR(255) DEFAULT NULL,
-                numero VARCHAR(20) DEFAULT NULL,
-                complemento VARCHAR(100) DEFAULT NULL,
-                bairro VARCHAR(100) DEFAULT NULL,
-                cidade VARCHAR(100) DEFAULT NULL,
-                estado CHAR(2) DEFAULT NULL,
-                observacoes TEXT DEFAULT NULL,
-                criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-            )
-        `);
+        // As tabelas tblmovel e tblmovelTipo são gerenciadas pelo professor — não criamos aqui.
         console.log('Tabelas verificadas/criadas com sucesso');
     } catch (err) {
         console.error('Erro ao criar tabelas:', err.message);
@@ -207,14 +183,27 @@ app.delete('/api/usuarios/:id', async (req, res) => {
     }
 });
 
-// ─── IMÓVEIS CRUD ────────────────────────────────────────
+// ─── IMÓVEIS CRUD (tblmovel + tblmovelTipo) ──────────────
+
+// Lista todos os tipos de imóvel (para popular o select)
+app.get('/api/imoveis/tipos', async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT imovel_tipo_id, descricao FROM tblmovelTipo ORDER BY descricao ASC');
+        res.json({ ok: true, data: rows });
+    } catch (err) {
+        res.status(500).json({ ok: false, error: err.message });
+    }
+});
 
 app.get('/api/imoveis', async (req, res) => {
     try {
         const [rows] = await pool.query(
-            `SELECT id, codigo, descricao, tipo, status, area, quartos, banheiros, vagas,
-                    valor_venda, valor_aluguel, cidade, estado, bairro, criado_em
-             FROM imoveis ORDER BY id ASC`
+            `SELECT m.imovel_id, m.endereco, m.valor, m.area,
+                    m.proprietario_id, m.imovel_tipo_id, m.atualizado_em, m.atualizado_por,
+                    t.descricao AS tipo_descricao
+             FROM tblmovel m
+             LEFT JOIN tblmovelTipo t ON t.imovel_tipo_id = m.imovel_tipo_id
+             ORDER BY m.imovel_id ASC`
         );
         res.json({ ok: true, data: rows });
     } catch (err) {
@@ -224,7 +213,15 @@ app.get('/api/imoveis', async (req, res) => {
 
 app.get('/api/imoveis/:id', async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM imoveis WHERE id = ?', [req.params.id]);
+        const [rows] = await pool.query(
+            `SELECT m.imovel_id, m.endereco, m.valor, m.area,
+                    m.proprietario_id, m.imovel_tipo_id, m.atualizado_em, m.atualizado_por,
+                    t.descricao AS tipo_descricao
+             FROM tblmovel m
+             LEFT JOIN tblmovelTipo t ON t.imovel_tipo_id = m.imovel_tipo_id
+             WHERE m.imovel_id = ?`,
+            [req.params.id]
+        );
         if (rows.length === 0)
             return res.status(404).json({ ok: false, error: 'Imóvel não encontrado.' });
         res.json({ ok: true, data: rows[0] });
@@ -234,32 +231,21 @@ app.get('/api/imoveis/:id', async (req, res) => {
 });
 
 app.post('/api/imoveis', async (req, res) => {
-    const {
-        codigo, descricao, tipo, status, area, quartos, banheiros, vagas,
-        valor_venda, valor_aluguel, cep, logradouro, numero, complemento,
-        bairro, cidade, estado, observacoes
-    } = req.body;
+    const { endereco, valor, area, proprietario_id, imovel_tipo_id } = req.body;
 
-    if (!codigo || !descricao || !tipo || !status)
-        return res.status(400).json({ ok: false, error: 'Campos obrigatórios: código, descrição, tipo, status.' });
+    if (!endereco || !imovel_tipo_id)
+        return res.status(400).json({ ok: false, error: 'Campos obrigatórios: endereço e tipo do imóvel.' });
 
     try {
-        const [existe] = await pool.query('SELECT id FROM imoveis WHERE codigo = ?', [codigo]);
-        if (existe.length > 0)
-            return res.status(409).json({ ok: false, error: 'Código de imóvel já cadastrado.' });
-
         const [result] = await pool.query(
-            `INSERT INTO imoveis
-             (codigo, descricao, tipo, status, area, quartos, banheiros, vagas,
-              valor_venda, valor_aluguel, cep, logradouro, numero, complemento,
-              bairro, cidade, estado, observacoes)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO tblmovel (endereco, valor, area, proprietario_id, imovel_tipo_id)
+             VALUES (?, ?, ?, ?, ?)`,
             [
-                codigo, descricao, tipo, status,
-                area || null, quartos || null, banheiros || null, vagas || null,
-                valor_venda || null, valor_aluguel || null,
-                cep || null, logradouro || null, numero || null, complemento || null,
-                bairro || null, cidade || null, estado || null, observacoes || null
+                endereco,
+                valor     || null,
+                area      || null,
+                proprietario_id || null,
+                imovel_tipo_id
             ]
         );
         res.json({ ok: true, id: result.insertId, message: 'Imóvel cadastrado com sucesso!' });
@@ -269,34 +255,22 @@ app.post('/api/imoveis', async (req, res) => {
 });
 
 app.put('/api/imoveis/:id', async (req, res) => {
-    const {
-        codigo, descricao, tipo, status, area, quartos, banheiros, vagas,
-        valor_venda, valor_aluguel, cep, logradouro, numero, complemento,
-        bairro, cidade, estado, observacoes
-    } = req.body;
+    const { endereco, valor, area, proprietario_id, imovel_tipo_id } = req.body;
 
-    if (!codigo || !descricao || !tipo || !status)
-        return res.status(400).json({ ok: false, error: 'Campos obrigatórios: código, descrição, tipo, status.' });
+    if (!endereco || !imovel_tipo_id)
+        return res.status(400).json({ ok: false, error: 'Campos obrigatórios: endereço e tipo do imóvel.' });
 
     try {
-        const [existe] = await pool.query(
-            'SELECT id FROM imoveis WHERE codigo = ? AND id != ?', [codigo, req.params.id]
-        );
-        if (existe.length > 0)
-            return res.status(409).json({ ok: false, error: 'Código já em uso por outro imóvel.' });
-
         const [result] = await pool.query(
-            `UPDATE imoveis SET
-                codigo=?, descricao=?, tipo=?, status=?, area=?, quartos=?, banheiros=?, vagas=?,
-                valor_venda=?, valor_aluguel=?, cep=?, logradouro=?, numero=?, complemento=?,
-                bairro=?, cidade=?, estado=?, observacoes=?
-             WHERE id=?`,
+            `UPDATE tblmovel SET
+                endereco=?, valor=?, area=?, proprietario_id=?, imovel_tipo_id=?
+             WHERE imovel_id=?`,
             [
-                codigo, descricao, tipo, status,
-                area || null, quartos || null, banheiros || null, vagas || null,
-                valor_venda || null, valor_aluguel || null,
-                cep || null, logradouro || null, numero || null, complemento || null,
-                bairro || null, cidade || null, estado || null, observacoes || null,
+                endereco,
+                valor     || null,
+                area      || null,
+                proprietario_id || null,
+                imovel_tipo_id,
                 req.params.id
             ]
         );
@@ -310,7 +284,7 @@ app.put('/api/imoveis/:id', async (req, res) => {
 
 app.delete('/api/imoveis/:id', async (req, res) => {
     try {
-        const [result] = await pool.query('DELETE FROM imoveis WHERE id = ?', [req.params.id]);
+        const [result] = await pool.query('DELETE FROM tblmovel WHERE imovel_id = ?', [req.params.id]);
         if (result.affectedRows === 0)
             return res.status(404).json({ ok: false, error: 'Imóvel não encontrado.' });
         res.json({ ok: true, message: 'Imóvel excluído com sucesso!' });
