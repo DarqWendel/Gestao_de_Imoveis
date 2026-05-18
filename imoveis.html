@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Usuários — Inventário de Imóveis</title>
+  <title>Imóveis — Inventário de Imóveis</title>
   <link rel="stylesheet" href="style.css">
   <style>
     body { background: var(--cream); }
@@ -31,7 +31,7 @@
     .page-header-left h1 { font-size: 28px; color: var(--gold-light); font-weight: 300; }
 
     /* ── Conteúdo ── */
-    .page-content { padding: 36px 48px; max-width: 1100px; margin: 0 auto; }
+    .page-content { padding: 36px 48px; max-width: 1300px; margin: 0 auto; }
 
     /* ── Toolbar ── */
     .table-toolbar {
@@ -43,16 +43,8 @@
       flex-wrap: wrap;
       align-items: center;
     }
-    .toolbar-sep {
-      width: 1px; height: 28px;
-      background: var(--cream-dim);
-      margin: 0 4px;
-    }
-    .toolbar-info {
-      margin-left: auto;
-      font-size: 12.5px;
-      color: var(--fog);
-    }
+    .toolbar-sep { width: 1px; height: 28px; background: var(--cream-dim); margin: 0 4px; }
+    .toolbar-info { margin-left: auto; font-size: 12.5px; color: var(--fog); }
 
     /* ── Tabela ── */
     .table-card {
@@ -66,7 +58,7 @@
     table { width: 100%; border-collapse: collapse; }
     thead { background: var(--ink); }
     th {
-      padding: 14px 18px;
+      padding: 14px 16px;
       text-align: left;
       font-family: 'DM Sans', sans-serif;
       font-size: 10.5px;
@@ -74,13 +66,14 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--gold-dim);
+      white-space: nowrap;
     }
     th.col-check { width: 44px; }
-    th.col-id    { width: 60px; }
+    th.col-id    { width: 55px; }
 
     td {
-      padding: 15px 18px;
-      font-size: 13.5px;
+      padding: 13px 16px;
+      font-size: 13px;
       color: var(--ink);
       border-bottom: 1px solid var(--cream-dim);
       vertical-align: middle;
@@ -89,32 +82,48 @@
     tbody tr { transition: background 0.15s; cursor: default; }
     tbody tr:hover td { background: #fdf8f2; }
     tbody tr.selected td { background: #fdf5e9; }
+    td.col-id { color: #b0a090; font-size: 12px; }
 
-    td.col-id { color: #b0a090; font-size: 12.5px; }
+    input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; accent-color: var(--gold); }
 
-    input[type="checkbox"] {
-      width: 15px; height: 15px; cursor: pointer; accent-color: var(--gold);
-    }
-
+    /* Badges de status */
     .badge {
       display: inline-flex; align-items: center; gap: 5px;
-      padding: 4px 12px; border-radius: 20px;
-      font-size: 11.5px; font-weight: 600; letter-spacing: 0.04em;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+      white-space: nowrap;
     }
     .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; }
-    .badge-admin { background: #fdf3e3; color: #8a5a00; border: 1px solid #f0d89a; }
-    .badge-admin::before { background: #c9a96e; }
-    .badge-user  { background: #edf7ed; color: #2e6b2e; border: 1px solid #a8d5a8; }
-    .badge-user::before  { background: #4caf50; }
+    .badge-disponivel  { background: #edf7ed; color: #2e6b2e; border: 1px solid #a8d5a8; }
+    .badge-disponivel::before { background: #4caf50; }
+    .badge-alugado     { background: #e8f0fe; color: #1a56a0; border: 1px solid #90b4e8; }
+    .badge-alugado::before { background: #3b82f6; }
+    .badge-vendido     { background: #fdf3e3; color: #8a5a00; border: 1px solid #f0d89a; }
+    .badge-vendido::before { background: #c9a96e; }
+    .badge-reforma     { background: #fff8e1; color: #7c5c00; border: 1px solid #ffe082; }
+    .badge-reforma::before { background: #ffc107; }
+    .badge-inativo     { background: #f5f5f5; color: #666; border: 1px solid #ddd; }
+    .badge-inativo::before { background: #999; }
+
+    /* Badges de tipo */
+    .tipo-badge {
+      font-size: 11px; color: var(--gold-dim); background: #faf6f0;
+      border: 1px solid var(--cream-dim); padding: 2px 8px; border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .valor-cell { font-variant-numeric: tabular-nums; }
+    .valor-cell .val-label { font-size: 10px; color: var(--fog); display: block; }
+    .valor-cell .val-num { font-weight: 500; color: var(--ink); }
 
     .table-empty {
       text-align: center; padding: 60px 20px; color: var(--fog);
     }
-    .table-empty svg { width: 52px; height: 52px; margin-bottom: 16px; opacity: 0.25; display: block; margin-left: auto; margin-right: auto; }
+    .table-empty svg { width: 52px; height: 52px; margin-bottom: 16px; opacity: 0.25; display: block; margin: 0 auto 16px; }
     .table-empty p { font-size: 14px; }
     .table-empty small { font-size: 12px; opacity: 0.6; margin-top: 4px; display: block; }
 
-    /* ── Modal overlay ── */
+    /* ── Modal ── */
     .modal-overlay {
       display: none; position: fixed; inset: 0;
       background: rgba(10,8,6,0.72);
@@ -128,7 +137,9 @@
       border: 1px solid rgba(201,169,110,0.2);
       border-radius: var(--radius-lg);
       padding: 36px;
-      width: 100%; max-width: 520px;
+      width: 100%; max-width: 680px;
+      max-height: 90vh;
+      overflow-y: auto;
       box-shadow: var(--shadow-lg);
       animation: modalIn 0.25s cubic-bezier(.4,0,.2,1);
     }
@@ -140,39 +151,50 @@
     .modal-header h2 { font-size: 22px; color: var(--gold-light); }
     .modal-header p { font-size: 13px; color: var(--fog); margin-top: 4px; }
 
+    .modal-section {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--gold-dim);
+      margin: 22px 0 14px; padding-bottom: 6px;
+      border-bottom: 1px solid rgba(201,169,110,0.1);
+    }
+
     .modal-footer {
       display: flex; gap: 10px; justify-content: flex-end;
       margin-top: 24px; padding-top: 20px;
       border-top: 1px solid rgba(201,169,110,0.12);
     }
 
-    /* Form dentro do modal (tema escuro) */
-    .form-group { margin-bottom: 16px; }
+    .form-group { margin-bottom: 14px; }
     .form-group label {
       display: block; font-size: 10.5px; font-weight: 600;
       letter-spacing: 0.14em; text-transform: uppercase;
       color: var(--gold-dim); margin-bottom: 7px;
     }
     .form-group input,
-    .form-group select {
-      width: 100%; padding: 11px 14px;
+    .form-group select,
+    .form-group textarea {
+      width: 100%; padding: 10px 14px;
       background: rgba(255,255,255,0.06);
       border: 1.5px solid rgba(201,169,110,0.18);
       border-radius: var(--radius-sm);
       font-family: 'DM Sans', sans-serif;
       font-size: 14px; color: var(--cream);
       outline: none; transition: border-color var(--transition), box-shadow var(--transition);
+      resize: vertical;
     }
-    .form-group input::placeholder { color: rgba(184,168,152,0.45); }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: rgba(184,168,152,0.45); }
     .form-group input:focus,
-    .form-group select:focus {
+    .form-group select:focus,
+    .form-group textarea:focus {
       border-color: var(--gold);
       box-shadow: 0 0 0 3px rgba(201,169,110,0.1);
       background: rgba(255,255,255,0.09);
     }
     .form-group select option { background: var(--deep); color: var(--cream); }
     .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .hint { font-size: 11px; color: var(--gold-dim); margin-top: 5px; opacity: 0.7; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .form-row-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
 
     .alert { padding: 12px 16px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 18px; display: none; }
     .alert-error { background: rgba(146,43,33,0.15); color: #f1948a; border-left: 3px solid #922b21; }
@@ -213,8 +235,8 @@
     <li class="nav-item nav-dropdown">
       <span>Cadastros <span class="caret">▾</span></span>
       <div class="dropdown-panel"><div class="dropdown-panel-inner">
-        <a href="usuarios.html" class="active">Usuários</a>
-        <a href="imoveis.html">Imóveis</a>
+        <a href="usuarios.html">Usuários</a>
+        <a href="imoveis.html" class="active">Imóveis</a>
       </div></div>
     </li>
     <li class="nav-item"><a href="#">Sobre</a></li>
@@ -234,9 +256,9 @@
         <span>›</span>
         Cadastros
         <span>›</span>
-        Usuários
+        Imóveis
       </p>
-      <h1>Usuários</h1>
+      <h1>Imóveis</h1>
     </div>
   </div>
 
@@ -261,20 +283,24 @@
           <tr>
             <th class="col-check"><input type="checkbox" id="checkAll" onchange="toggleAll(this)"></th>
             <th class="col-id">ID</th>
-            <th>Nome</th>
-            <th>E-mail</th>
-            <th>Login</th>
-            <th>Perfil</th>
+            <th>Código</th>
+            <th>Descrição</th>
+            <th>Tipo</th>
+            <th>Status</th>
+            <th>Área (m²)</th>
+            <th>Quartos</th>
+            <th>Valor</th>
+            <th>Cidade / UF</th>
           </tr>
         </thead>
         <tbody id="tbody">
           <tr>
-            <td colspan="6" class="table-empty">
+            <td colspan="10" class="table-empty">
               <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/>
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
               </svg>
-              <p>Carregando usuários…</p>
+              <p>Carregando imóveis…</p>
             </td>
           </tr>
         </tbody>
@@ -293,40 +319,132 @@
 <div class="modal-overlay" id="modalForm">
   <div class="modal">
     <div class="modal-header">
-      <h2 id="modalTitulo">Incluir Usuário</h2>
-      <p id="modalDesc">Preencha os dados para cadastrar um novo usuário.</p>
+      <h2 id="modalTitulo">Incluir Imóvel</h2>
+      <p id="modalDesc">Preencha os dados para cadastrar um novo imóvel.</p>
     </div>
 
     <div class="alert alert-error" id="msgErro"></div>
     <div class="alert alert-ok"   id="msgOk"></div>
 
-    <div class="form-group" style="grid-column:1/-1">
-      <label>Nome Completo *</label>
-      <input type="text" id="fNome" placeholder="Nome completo do usuário">
-    </div>
+    <!-- Identificação -->
+    <div class="modal-section">Identificação</div>
     <div class="form-row-2">
       <div class="form-group">
-        <label>E-mail *</label>
-        <input type="email" id="fEmail" placeholder="email@exemplo.com">
+        <label>Código *</label>
+        <input type="text" id="fCodigo" placeholder="Ex: AP-001">
       </div>
       <div class="form-group">
-        <label>Login *</label>
-        <input type="text" id="fLogin" placeholder="nome.usuario">
-      </div>
-    </div>
-    <div class="form-row-2">
-      <div class="form-group">
-        <label>Senha <span id="senhaLabel"></span></label>
-        <input type="password" id="fSenha" placeholder="Mínimo 6 caracteres">
-        <p class="hint" id="hintSenha"></p>
-      </div>
-      <div class="form-group">
-        <label>Perfil</label>
-        <select id="fPerfil">
-          <option value="Usuário">Usuário</option>
-          <option value="Administrador">Administrador</option>
+        <label>Tipo *</label>
+        <select id="fTipo">
+          <option value="Apartamento">Apartamento</option>
+          <option value="Casa">Casa</option>
+          <option value="Terreno">Terreno</option>
+          <option value="Sala Comercial">Sala Comercial</option>
+          <option value="Galpão">Galpão</option>
+          <option value="Outro">Outro</option>
         </select>
       </div>
+    </div>
+    <div class="form-group">
+      <label>Descrição *</label>
+      <input type="text" id="fDescricao" placeholder="Ex: Apartamento 2 quartos no Centro">
+    </div>
+    <div class="form-group">
+      <label>Status *</label>
+      <select id="fStatus">
+        <option value="Disponível">Disponível</option>
+        <option value="Alugado">Alugado</option>
+        <option value="Vendido">Vendido</option>
+        <option value="Em Reforma">Em Reforma</option>
+        <option value="Inativo">Inativo</option>
+      </select>
+    </div>
+
+    <!-- Características -->
+    <div class="modal-section">Características</div>
+    <div class="form-row-4">
+      <div class="form-group">
+        <label>Área (m²)</label>
+        <input type="number" id="fArea" placeholder="Ex: 85" min="0" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>Quartos</label>
+        <input type="number" id="fQuartos" placeholder="0" min="0" max="99">
+      </div>
+      <div class="form-group">
+        <label>Banheiros</label>
+        <input type="number" id="fBanheiros" placeholder="0" min="0" max="99">
+      </div>
+      <div class="form-group">
+        <label>Vagas</label>
+        <input type="number" id="fVagas" placeholder="0" min="0" max="99">
+      </div>
+    </div>
+
+    <!-- Valores -->
+    <div class="modal-section">Valores</div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label>Valor de Venda (R$)</label>
+        <input type="number" id="fValorVenda" placeholder="Ex: 350000.00" min="0" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>Valor de Aluguel (R$)</label>
+        <input type="number" id="fValorAluguel" placeholder="Ex: 2500.00" min="0" step="0.01">
+      </div>
+    </div>
+
+    <!-- Endereço -->
+    <div class="modal-section">Endereço</div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label>CEP</label>
+        <input type="text" id="fCep" placeholder="00000-000" maxlength="9">
+      </div>
+      <div class="form-group">
+        <label>Número</label>
+        <input type="text" id="fNumero" placeholder="Ex: 42">
+      </div>
+    </div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label>Logradouro</label>
+        <input type="text" id="fLogradouro" placeholder="Rua, Av., Alameda...">
+      </div>
+      <div class="form-group">
+        <label>Complemento</label>
+        <input type="text" id="fComplemento" placeholder="Apto, Bloco...">
+      </div>
+    </div>
+    <div class="form-row-3">
+      <div class="form-group">
+        <label>Bairro</label>
+        <input type="text" id="fBairro" placeholder="Bairro">
+      </div>
+      <div class="form-group">
+        <label>Cidade</label>
+        <input type="text" id="fCidade" placeholder="Cidade">
+      </div>
+      <div class="form-group">
+        <label>Estado (UF)</label>
+        <select id="fEstado">
+          <option value="">—</option>
+          <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+          <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+          <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+          <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+          <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+          <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+          <option>SP</option><option>SE</option><option>TO</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Observações -->
+    <div class="modal-section">Observações</div>
+    <div class="form-group">
+      <label>Observações</label>
+      <textarea id="fObs" rows="3" placeholder="Informações adicionais sobre o imóvel..."></textarea>
     </div>
 
     <div class="modal-footer">
@@ -355,7 +473,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  let usuarios = [];
+  let imoveis = [];
   let selecionados = new Set();
   let modoEdicao = false;
   let idEdicao = null;
@@ -363,44 +481,70 @@
   // ── Init
   document.addEventListener('DOMContentLoaded', () => {
     if (!localStorage.getItem('usuarioLogado')) { window.location.href = 'login.html'; return; }
-    carregarUsuarios();
+    carregarImoveis();
+    // Máscara de CEP
+    document.getElementById('fCep').addEventListener('input', function() {
+      let v = this.value.replace(/\D/g,'');
+      if (v.length > 5) v = v.slice(0,5) + '-' + v.slice(5,8);
+      this.value = v;
+    });
   });
 
   // ── API
-  async function carregarUsuarios() {
+  async function carregarImoveis() {
     try {
-      const res  = await fetch('/api/usuarios');
+      const res  = await fetch('/api/imoveis');
       const data = await res.json();
-      if (data.ok) { usuarios = data.data; renderTabela(); }
+      if (data.ok) { imoveis = data.data; renderTabela(); }
       else emptyState('Erro ao carregar: ' + (data.error || ''));
     } catch { emptyState('Erro de conexão com o servidor.'); }
+  }
+
+  // ── Status → classe CSS
+  function statusClass(s) {
+    const m = { 'Disponível':'disponivel','Alugado':'alugado','Vendido':'vendido','Em Reforma':'reforma','Inativo':'inativo' };
+    return m[s] || 'inativo';
+  }
+
+  // ── Formatar valor
+  function fmtVal(v) {
+    if (!v && v !== 0) return '—';
+    return 'R$ ' + parseFloat(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   // ── Render
   function renderTabela() {
     const tbody = document.getElementById('tbody');
     document.getElementById('toolbarInfo').textContent =
-      usuarios.length + (usuarios.length === 1 ? ' registro' : ' registros');
+      imoveis.length + (imoveis.length === 1 ? ' registro' : ' registros');
 
-    if (!usuarios.length) { emptyState('Nenhum usuário cadastrado ainda.'); return; }
+    if (!imoveis.length) { emptyState('Nenhum imóvel cadastrado ainda.'); return; }
 
-    tbody.innerHTML = usuarios.map(u => `
-      <tr data-id="${u.id}" class="${selecionados.has(u.id) ? 'selected' : ''}">
+    tbody.innerHTML = imoveis.map(im => {
+      const valor = im.valor_venda ? fmtVal(im.valor_venda) : (im.valor_aluguel ? fmtVal(im.valor_aluguel) : '—');
+      const labelValor = im.valor_venda ? 'Venda' : (im.valor_aluguel ? 'Aluguel' : '');
+      const localidade = [im.cidade, im.estado].filter(Boolean).join(' / ') || '—';
+      return `
+      <tr data-id="${im.id}" class="${selecionados.has(im.id) ? 'selected' : ''}">
         <td class="col-check">
-          <input type="checkbox" class="row-check" value="${u.id}"
-            ${selecionados.has(u.id) ? 'checked' : ''}
-            onchange="toggleSelect(${u.id}, this.checked)">
+          <input type="checkbox" class="row-check" value="${im.id}"
+            ${selecionados.has(im.id) ? 'checked' : ''}
+            onchange="toggleSelect(${im.id}, this.checked)">
         </td>
-        <td class="col-id">${u.id}</td>
-        <td><strong style="font-weight:500">${esc(u.nome)}</strong></td>
-        <td>${esc(u.email)}</td>
-        <td style="color:#7a6a5a">${esc(u.login)}</td>
-        <td>
-          <span class="badge ${u.perfil === 'Administrador' ? 'badge-admin' : 'badge-user'}">
-            ${esc(u.perfil || 'Usuário')}
-          </span>
+        <td class="col-id">${im.id}</td>
+        <td><strong style="font-weight:600;letter-spacing:.03em">${esc(im.codigo)}</strong></td>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(im.descricao)}</td>
+        <td><span class="tipo-badge">${esc(im.tipo)}</span></td>
+        <td><span class="badge badge-${statusClass(im.status)}">${esc(im.status)}</span></td>
+        <td>${im.area ? parseFloat(im.area).toLocaleString('pt-BR') + ' m²' : '—'}</td>
+        <td style="text-align:center">${im.quartos ?? '—'}</td>
+        <td class="valor-cell">
+          ${labelValor ? `<span class="val-label">${labelValor}</span>` : ''}
+          <span class="val-num">${valor}</span>
         </td>
-      </tr>`).join('');
+        <td>${esc(localidade)}</td>
+      </tr>`;
+    }).join('');
 
     document.querySelectorAll('#tbody tr[data-id]').forEach(tr => {
       tr.addEventListener('dblclick', () => {
@@ -413,13 +557,13 @@
 
   function emptyState(msg) {
     document.getElementById('tbody').innerHTML = `
-      <tr><td colspan="6" class="table-empty">
+      <tr><td colspan="10" class="table-empty">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
-            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/>
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
         </svg>
         <p>${msg}</p>
-        <small>Clique em "+ Incluir" para adicionar o primeiro usuário.</small>
+        <small>Clique em "+ Incluir" para adicionar o primeiro imóvel.</small>
       </td></tr>`;
     document.getElementById('toolbarInfo').textContent = '0 registros';
   }
@@ -441,8 +585,7 @@
     atualizarBotoes();
   }
   function selecionarUnico(id) {
-    selecionados.clear();
-    selecionados.add(id);
+    selecionados.clear(); selecionados.add(id);
     document.querySelectorAll('.row-check').forEach(cb => {
       const sel = parseInt(cb.value) === id;
       cb.checked = sel;
@@ -464,36 +607,61 @@
   function abrirIncluir() {
     modoEdicao = false; idEdicao = null;
     limparForm();
-    document.getElementById('modalTitulo').textContent = 'Incluir Usuário';
-    document.getElementById('modalDesc').textContent   = 'Preencha os dados para cadastrar um novo usuário.';
-    document.getElementById('senhaLabel').textContent  = '*';
-    document.getElementById('hintSenha').textContent   = '';
+    document.getElementById('modalTitulo').textContent = 'Incluir Imóvel';
+    document.getElementById('modalDesc').textContent   = 'Preencha os dados para cadastrar um novo imóvel.';
     document.getElementById('modalForm').classList.add('open');
   }
 
-  // ── Modal Editar
-  function abrirEditar() {
+  // ── Modal Editar — busca dados completos na API
+  async function abrirEditar() {
     if (selecionados.size !== 1) return;
-    const u = usuarios.find(x => x.id === [...selecionados][0]);
-    if (!u) return;
-    modoEdicao = true; idEdicao = u.id;
-    limparForm();
-    document.getElementById('modalTitulo').textContent = 'Editar Usuário';
-    document.getElementById('modalDesc').textContent   = 'Altere os dados do usuário selecionado.';
-    document.getElementById('fNome').value    = u.nome;
-    document.getElementById('fEmail').value   = u.email;
-    document.getElementById('fLogin').value   = u.login;
-    document.getElementById('fPerfil').value  = u.perfil || 'Usuário';
-    document.getElementById('senhaLabel').textContent = '(opcional)';
-    document.getElementById('hintSenha').textContent  = 'Deixe em branco para manter a senha atual.';
-    document.getElementById('modalForm').classList.add('open');
+    const id = [...selecionados][0];
+    try {
+      const res  = await fetch(`/api/imoveis/${id}`);
+      const data = await res.json();
+      if (!data.ok) { toast('Erro ao carregar imóvel.', 'erro'); return; }
+      const im = data.data;
+      modoEdicao = true; idEdicao = im.id;
+      limparForm();
+      document.getElementById('modalTitulo').textContent = 'Editar Imóvel';
+      document.getElementById('modalDesc').textContent   = 'Altere os dados do imóvel selecionado.';
+
+      setVal('fCodigo', im.codigo);
+      setVal('fDescricao', im.descricao);
+      setVal('fTipo', im.tipo);
+      setVal('fStatus', im.status);
+      setVal('fArea', im.area ?? '');
+      setVal('fQuartos', im.quartos ?? '');
+      setVal('fBanheiros', im.banheiros ?? '');
+      setVal('fVagas', im.vagas ?? '');
+      setVal('fValorVenda', im.valor_venda ?? '');
+      setVal('fValorAluguel', im.valor_aluguel ?? '');
+      setVal('fCep', im.cep ?? '');
+      setVal('fLogradouro', im.logradouro ?? '');
+      setVal('fNumero', im.numero ?? '');
+      setVal('fComplemento', im.complemento ?? '');
+      setVal('fBairro', im.bairro ?? '');
+      setVal('fCidade', im.cidade ?? '');
+      setVal('fEstado', im.estado ?? '');
+      setVal('fObs', im.observacoes ?? '');
+
+      document.getElementById('modalForm').classList.add('open');
+    } catch { toast('Erro de conexão ao carregar imóvel.', 'erro'); }
+  }
+
+  function setVal(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
   }
 
   function fecharModal() { document.getElementById('modalForm').classList.remove('open'); limparForm(); }
 
   function limparForm() {
-    ['fNome','fEmail','fLogin','fSenha'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('fPerfil').value = 'Usuário';
+    const ids = ['fCodigo','fDescricao','fTipo','fStatus','fArea','fQuartos','fBanheiros','fVagas',
+                 'fValorVenda','fValorAluguel','fCep','fLogradouro','fNumero','fComplemento',
+                 'fBairro','fCidade','fEstado','fObs'];
+    ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = (el.tagName==='SELECT' ? el.options[0]?.value : ''); });
+    document.getElementById('fEstado').value = '';
     document.getElementById('msgErro').style.display = 'none';
     document.getElementById('msgOk').style.display   = 'none';
   }
@@ -506,30 +674,35 @@
     msgErro.style.display = msgOk.style.display = 'none';
 
     const payload = {
-      nome:   document.getElementById('fNome').value.trim(),
-      email:  document.getElementById('fEmail').value.trim(),
-      login:  document.getElementById('fLogin').value.trim(),
-      senha:  document.getElementById('fSenha').value,
-      perfil: document.getElementById('fPerfil').value
+      codigo:         document.getElementById('fCodigo').value.trim(),
+      descricao:      document.getElementById('fDescricao').value.trim(),
+      tipo:           document.getElementById('fTipo').value,
+      status:         document.getElementById('fStatus').value,
+      area:           document.getElementById('fArea').value || null,
+      quartos:        document.getElementById('fQuartos').value || null,
+      banheiros:      document.getElementById('fBanheiros').value || null,
+      vagas:          document.getElementById('fVagas').value || null,
+      valor_venda:    document.getElementById('fValorVenda').value || null,
+      valor_aluguel:  document.getElementById('fValorAluguel').value || null,
+      cep:            document.getElementById('fCep').value.trim() || null,
+      logradouro:     document.getElementById('fLogradouro').value.trim() || null,
+      numero:         document.getElementById('fNumero').value.trim() || null,
+      complemento:    document.getElementById('fComplemento').value.trim() || null,
+      bairro:         document.getElementById('fBairro').value.trim() || null,
+      cidade:         document.getElementById('fCidade').value.trim() || null,
+      estado:         document.getElementById('fEstado').value || null,
+      observacoes:    document.getElementById('fObs').value.trim() || null,
     };
 
-    if (!payload.nome || !payload.email || !payload.login) {
-      msgErro.textContent = 'Preencha todos os campos obrigatórios.';
-      msgErro.style.display = 'block'; return;
-    }
-    if (!modoEdicao && !payload.senha) {
-      msgErro.textContent = 'A senha é obrigatória para novos usuários.';
-      msgErro.style.display = 'block'; return;
-    }
-    if (payload.senha && payload.senha.length < 6) {
-      msgErro.textContent = 'A senha deve ter pelo menos 6 caracteres.';
+    if (!payload.codigo || !payload.descricao || !payload.tipo || !payload.status) {
+      msgErro.textContent = 'Preencha os campos obrigatórios: código, descrição, tipo e status.';
       msgErro.style.display = 'block'; return;
     }
 
     btn.disabled = true; btn.textContent = 'Salvando…';
 
     try {
-      const url    = modoEdicao ? `/api/usuarios/${idEdicao}` : '/api/usuarios';
+      const url    = modoEdicao ? `/api/imoveis/${idEdicao}` : '/api/imoveis';
       const method = modoEdicao ? 'PUT' : 'POST';
       const res  = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       const data = await res.json();
@@ -537,7 +710,7 @@
       if (data.ok) {
         msgOk.textContent = '✓ ' + data.message;
         msgOk.style.display = 'block';
-        await carregarUsuarios();
+        await carregarImoveis();
         selecionados.clear(); atualizarBotoes();
         setTimeout(fecharModal, 900);
         toast(data.message, 'ok');
@@ -554,8 +727,8 @@
   // ── Excluir
   function confirmarExcluir() {
     const nomes = [...selecionados].map(id => {
-      const u = usuarios.find(x => x.id === id);
-      return u ? `"${u.nome}"` : `ID ${id}`;
+      const im = imoveis.find(x => x.id === id);
+      return im ? `"${im.codigo} — ${im.descricao}"` : `ID ${id}`;
     }).join(', ');
     document.getElementById('nomeExcluir').textContent = nomes;
     document.getElementById('modalConfirm').classList.add('open');
@@ -565,10 +738,10 @@
     const ids = [...selecionados];
     fecharConfirm();
     try {
-      await Promise.all(ids.map(id => fetch(`/api/usuarios/${id}`, { method: 'DELETE' })));
-      await carregarUsuarios();
+      await Promise.all(ids.map(id => fetch(`/api/imoveis/${id}`, { method: 'DELETE' })));
+      await carregarImoveis();
       selecionados.clear(); atualizarBotoes();
-      toast(ids.length > 1 ? `${ids.length} usuários excluídos.` : 'Usuário excluído com sucesso!', 'ok');
+      toast(ids.length > 1 ? `${ids.length} imóveis excluídos.` : 'Imóvel excluído com sucesso!', 'ok');
     } catch { toast('Erro ao excluir. Tente novamente.', 'erro'); }
   }
 
@@ -584,7 +757,7 @@
     setTimeout(() => el.classList.remove('show'), 3500);
   }
 
-  // ── Escape
+  // ── Escape helper
   function esc(s) {
     return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
