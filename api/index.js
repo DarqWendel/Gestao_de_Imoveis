@@ -186,9 +186,19 @@ app.delete('/api/usuarios/:id', async (req, res) => {
 // ─── IMÓVEIS CRUD (tblmovel + tblmovelTipo) ──────────────
 
 // Lista todos os tipos de imóvel (para popular o select)
+// Se a tabela estiver vazia, insere tipos padrão automaticamente
 app.get('/api/imoveis/tipos', async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT imovel_tipo_id, descricao FROM tblmovelTipo ORDER BY descricao ASC');
+        let [rows] = await pool.query('SELECT imovel_tipo_id, descricao FROM tblmovelTipo ORDER BY descricao ASC');
+
+        if (rows.length === 0) {
+            const tiposPadrao = ['Apartamento', 'Casa', 'Terreno', 'Sala Comercial', 'Galpao', 'Outro'];
+            for (const desc of tiposPadrao) {
+                await pool.query('INSERT IGNORE INTO tblmovelTipo (descricao) VALUES (?)', [desc]);
+            }
+            [rows] = await pool.query('SELECT imovel_tipo_id, descricao FROM tblmovelTipo ORDER BY descricao ASC');
+        }
+
         res.json({ ok: true, data: rows });
     } catch (err) {
         res.status(500).json({ ok: false, error: err.message });
