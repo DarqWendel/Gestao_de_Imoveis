@@ -247,16 +247,20 @@ app.post('/api/imoveis', async (req, res) => {
         return res.status(400).json({ ok: false, error: 'Campos obrigatórios: endereço e tipo.' });
 
     try {
+        await pool.query('SET FOREIGN_KEY_CHECKS=0');
         const [result] = await pool.query(
-            `INSERT INTO tblmovel (endereco, valor, area, imovel_tipo_id)
-             VALUES (?, ?, ?, ?)`,
+            `INSERT INTO tblmovel (endereco, valor, area, proprietario_id, imovel_tipo_id, atualizado_por)
+             VALUES (?, ?, ?, ?, ?, ?)`,
             [
                 endereco,
                 valor || null,
                 area  || null,
-                imovel_tipo_id
+                0,
+                imovel_tipo_id,
+                0
             ]
         );
+        await pool.query('SET FOREIGN_KEY_CHECKS=1');
         res.json({ ok: true, id: result.insertId, message: 'Imóvel cadastrado com sucesso!' });
     } catch (err) {
         res.status(500).json({ ok: false, error: err.message });
@@ -270,6 +274,7 @@ app.put('/api/imoveis/:id', async (req, res) => {
         return res.status(400).json({ ok: false, error: 'Campos obrigatórios: endereço e tipo.' });
 
     try {
+        await pool.query('SET FOREIGN_KEY_CHECKS=0');
         const [result] = await pool.query(
             `UPDATE tblmovel SET
                 endereco=?, valor=?, area=?, imovel_tipo_id=?
@@ -282,6 +287,7 @@ app.put('/api/imoveis/:id', async (req, res) => {
                 req.params.id
             ]
         );
+        await pool.query('SET FOREIGN_KEY_CHECKS=1');
         if (result.affectedRows === 0)
             return res.status(404).json({ ok: false, error: 'Imóvel não encontrado.' });
         res.json({ ok: true, message: 'Imóvel atualizado com sucesso!' });
