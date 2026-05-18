@@ -241,10 +241,10 @@ app.get('/api/imoveis/:id', async (req, res) => {
 });
 
 app.post('/api/imoveis', async (req, res) => {
-    const { endereco, valor, area, proprietario_id, imovel_tipo_id } = req.body;
+    const { endereco, valor, area, proprietario_id, imovel_tipo_id, atualizado_por } = req.body;
 
-    if (!endereco || !imovel_tipo_id)
-        return res.status(400).json({ ok: false, error: 'Campos obrigatórios: endereço e tipo do imóvel.' });
+    if (!endereco || !imovel_tipo_id || !proprietario_id || !atualizado_por)
+        return res.status(400).json({ ok: false, error: 'Campos obrigatórios: endereço, tipo, proprietário e atualizado por.' });
 
     try {
         const [result] = await pool.query(
@@ -252,11 +252,11 @@ app.post('/api/imoveis', async (req, res) => {
              VALUES (?, ?, ?, ?, ?, ?)`,
             [
                 endereco,
-                valor     || null,
-                area      || null,
-                null,
+                valor          || null,
+                area           || null,
+                proprietario_id,
                 imovel_tipo_id,
-                null
+                atualizado_por
             ]
         );
         res.json({ ok: true, id: result.insertId, message: 'Imóvel cadastrado com sucesso!' });
@@ -266,10 +266,10 @@ app.post('/api/imoveis', async (req, res) => {
 });
 
 app.put('/api/imoveis/:id', async (req, res) => {
-    const { endereco, valor, area, proprietario_id, imovel_tipo_id } = req.body;
+    const { endereco, valor, area, proprietario_id, imovel_tipo_id, atualizado_por } = req.body;
 
-    if (!endereco || !imovel_tipo_id)
-        return res.status(400).json({ ok: false, error: 'Campos obrigatórios: endereço e tipo do imóvel.' });
+    if (!endereco || !imovel_tipo_id || !proprietario_id || !atualizado_por)
+        return res.status(400).json({ ok: false, error: 'Campos obrigatórios: endereço, tipo, proprietário e atualizado por.' });
 
     try {
         const [result] = await pool.query(
@@ -278,11 +278,11 @@ app.put('/api/imoveis/:id', async (req, res) => {
              WHERE imovel_id=?`,
             [
                 endereco,
-                valor     || null,
-                area      || null,
-                null,
+                valor          || null,
+                area           || null,
+                proprietario_id,
                 imovel_tipo_id,
-                null,
+                atualizado_por,
                 req.params.id
             ]
         );
