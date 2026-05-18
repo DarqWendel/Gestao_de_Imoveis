@@ -247,7 +247,13 @@ app.post('/api/imoveis', async (req, res) => {
         return res.status(400).json({ ok: false, error: 'Campos obrigatórios: endereço e tipo.' });
 
     try {
-        await pool.query('SET FOREIGN_KEY_CHECKS=0');
+        // Garante que existe uma pessoa padrão para usar como proprietário
+        await pool.query(`
+            INSERT IGNORE INTO cadastro.tbPessoas (nome) VALUES ('Padrão')
+        `).catch(() => {});
+        const [[pessoa]] = await pool.query('SELECT pessoa_id FROM cadastro.tbPessoas LIMIT 1');
+        const pessoaId = pessoa ? pessoa.pessoa_id : 1;
+
         const [result] = await pool.query(
             `INSERT INTO tblmovel (endereco, valor, area, proprietario_id, imovel_tipo_id, atualizado_por)
              VALUES (?, ?, ?, ?, ?, ?)`,
@@ -255,12 +261,11 @@ app.post('/api/imoveis', async (req, res) => {
                 endereco,
                 valor || null,
                 area  || null,
-                0,
+                pessoaId,
                 imovel_tipo_id,
-                0
+                pessoaId
             ]
         );
-        await pool.query('SET FOREIGN_KEY_CHECKS=1');
         res.json({ ok: true, id: result.insertId, message: 'Imóvel cadastrado com sucesso!' });
     } catch (err) {
         res.status(500).json({ ok: false, error: err.message });
@@ -274,20 +279,26 @@ app.put('/api/imoveis/:id', async (req, res) => {
         return res.status(400).json({ ok: false, error: 'Campos obrigatórios: endereço e tipo.' });
 
     try {
-        await pool.query('SET FOREIGN_KEY_CHECKS=0');
+        await pool.query(`
+            INSERT IGNORE INTO cadastro.tbPessoas (nome) VALUES ('Padrão')
+        `).catch(() => {});
+        const [[pessoaUpd]] = await pool.query('SELECT pessoa_id FROM cadastro.tbPessoas LIMIT 1');
+        const pessoaIdUpd = pessoaUpd ? pessoaUpd.pessoa_id : 1;
+
         const [result] = await pool.query(
             `UPDATE tblmovel SET
-                endereco=?, valor=?, area=?, imovel_tipo_id=?
+                endereco=?, valor=?, area=?, imovel_tipo_id=?, proprietario_id=?, atualizado_por=?
              WHERE imovel_id=?`,
             [
                 endereco,
                 valor || null,
                 area  || null,
                 imovel_tipo_id,
+                pessoaIdUpd,
+                pessoaIdUpd,
                 req.params.id
             ]
         );
-        await pool.query('SET FOREIGN_KEY_CHECKS=1');
         if (result.affectedRows === 0)
             return res.status(404).json({ ok: false, error: 'Imóvel não encontrado.' });
         res.json({ ok: true, message: 'Imóvel atualizado com sucesso!' });
