@@ -473,16 +473,14 @@
     msgErro.style.display = msgOk.style.display = 'none';
 
     const payload = {
-      endereco:        document.getElementById('fEndereco').value.trim(),
-      imovel_tipo_id:  document.getElementById('fTipo').value,
-      area:            document.getElementById('fArea').value         || null,
-      valor:           document.getElementById('fValor').value        || null,
-      proprietario_id: document.getElementById('fProprietario').value || null,
-      atualizado_por:  document.getElementById('fAtualizadoPor').value || null,
+      endereco:       document.getElementById('fEndereco').value.trim(),
+      imovel_tipo_id: document.getElementById('fTipo').value,
+      area:           document.getElementById('fArea').value  || null,
+      valor:          document.getElementById('fValor').value || null,
     };
 
-    if (!payload.endereco || !payload.imovel_tipo_id || !payload.proprietario_id || !payload.atualizado_por) {
-      msgErro.textContent = 'Endereço, Tipo, Proprietário ID e Atualizado Por são obrigatórios.';
+    if (!payload.endereco || !payload.imovel_tipo_id) {
+      msgErro.textContent = 'Endereço e Tipo são obrigatórios.';
       msgErro.style.display = 'block'; return;
     }
 
