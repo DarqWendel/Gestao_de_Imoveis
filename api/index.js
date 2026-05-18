@@ -248,14 +248,15 @@ app.post('/api/imoveis', async (req, res) => {
 
     try {
         const [result] = await pool.query(
-            `INSERT INTO tblmovel (endereco, valor, area, proprietario_id, imovel_tipo_id)
-             VALUES (?, ?, ?, ?, ?)`,
+            `INSERT INTO tblmovel (endereco, valor, area, proprietario_id, imovel_tipo_id, atualizado_por)
+             VALUES (?, ?, ?, ?, ?, ?)`,
             [
                 endereco,
                 valor     || null,
                 area      || null,
                 proprietario_id || null,
-                imovel_tipo_id
+                imovel_tipo_id,
+                proprietario_id || 1
             ]
         );
         res.json({ ok: true, id: result.insertId, message: 'Imóvel cadastrado com sucesso!' });
@@ -273,7 +274,7 @@ app.put('/api/imoveis/:id', async (req, res) => {
     try {
         const [result] = await pool.query(
             `UPDATE tblmovel SET
-                endereco=?, valor=?, area=?, proprietario_id=?, imovel_tipo_id=?
+                endereco=?, valor=?, area=?, proprietario_id=?, imovel_tipo_id=?, atualizado_por=?
              WHERE imovel_id=?`,
             [
                 endereco,
@@ -281,6 +282,7 @@ app.put('/api/imoveis/:id', async (req, res) => {
                 area      || null,
                 proprietario_id || null,
                 imovel_tipo_id,
+                proprietario_id || 1,
                 req.params.id
             ]
         );
