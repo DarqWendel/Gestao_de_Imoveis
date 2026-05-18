@@ -1,166 +1,243 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(rgba(47,34,23,0.72), rgba(47,34,23,0.72)),
-                        url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-        }
-        .card {
-            background: white;
-            padding: 45px 40px;
-            border-radius: 24px;
-            width: 420px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.35);
-            text-align: center;
-        }
-        h2 {
-            font-family: 'Playfair Display', serif;
-            color: #3b2a1a;
-            font-size: 28px;
-            margin-bottom: 8px;
-        }
-        .subtitle {
-            color: #999;
-            font-size: 13px;
-            margin-bottom: 30px;
-        }
-        .form-group {
-            text-align: left;
-            margin-bottom: 16px;
-        }
-        label {
-            display: block;
-            font-size: 12px;
-            font-weight: 500;
-            color: #8b5e3c;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        input {
-            width: 100%;
-            padding: 13px 16px;
-            border: 1.5px solid #e8e0d8;
-            border-radius: 10px;
-            box-sizing: border-box;
-            outline: none;
-            background: #faf8f6;
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
-            color: #333;
-            transition: border-color 0.2s;
-        }
-        input:focus { border-color: #b08968; background: white; }
-        .btn {
-            width: 100%;
-            padding: 15px;
-            background: #b08968;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-family: 'Poppins', sans-serif;
-            cursor: pointer;
-            margin-top: 8px;
-            font-weight: 500;
-            transition: background 0.2s, transform 0.1s;
-        }
-        .btn:hover { background: #9a7455; transform: translateY(-1px); }
-        .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
-        .link-cadastro {
-            color: #b08968;
-            text-decoration: none;
-            display: block;
-            margin-top: 20px;
-            font-size: 13px;
-        }
-        .link-cadastro:hover { text-decoration: underline; }
-        .msg-erro {
-            background: #fde8e8;
-            color: #c0392b;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            margin-bottom: 16px;
-            display: none;
-            text-align: left;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar — Inventário de Imóveis</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: var(--ink); }
+
+    .auth-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* ── Painel esquerdo (imagem) ── */
+    .auth-visual {
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-visual-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1200&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+    }
+    .auth-visual-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(26,20,16,0.55) 0%,
+        rgba(26,20,16,0.82) 100%
+      );
+    }
+    .auth-visual-content {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 44px;
+    }
+    .auth-logo {
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+    }
+    .auth-logo .brand-main {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      color: var(--gold-light);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+    .auth-logo .brand-sub {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+    .auth-visual-quote {
+      margin-top: auto;
+      padding-top: 40px;
+    }
+    .auth-visual-quote blockquote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-style: italic;
+      color: var(--cream);
+      line-height: 1.45;
+      margin-bottom: 16px;
+      font-weight: 300;
+    }
+    .auth-visual-quote cite {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      font-style: normal;
+    }
+
+    /* ── Painel direito (form) ── */
+    .auth-form-panel {
+      background: var(--deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 72px;
+    }
+    .auth-form-inner { width: 100%; max-width: 380px; }
+
+    .auth-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 10px;
+    }
+    .auth-title {
+      font-size: 36px;
+      color: var(--gold-light);
+      margin-bottom: 6px;
+      font-weight: 300;
+    }
+    .auth-subtitle {
+      font-size: 13.5px;
+      color: var(--fog);
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+
+    .auth-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,169,110,0.2), transparent);
+      margin: 28px 0;
+    }
+
+    .auth-footer-link {
+      text-align: center;
+      font-size: 13px;
+      color: var(--fog);
+    }
+    .auth-footer-link a {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color var(--transition);
+    }
+    .auth-footer-link a:hover { color: var(--gold-light); }
+
+    .btn-full { width: 100%; justify-content: center; padding: 14px; font-size: 14px; }
+
+    /* Hint password */
+    .input-hint { font-size: 11px; color: var(--gold-dim); margin-top: 5px; }
+  </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Bem-vindo</h2>
-        <p class="subtitle">Entre com seu e-mail e senha</p>
 
-        <div class="msg-erro" id="msgErro"></div>
+<div class="auth-shell">
 
-        <form id="formLogin">
-            <div class="form-group">
-                <label>E-mail</label>
-                <input type="email" id="email" placeholder="seu@email.com" required>
-            </div>
-            <div class="form-group">
-                <label>Senha</label>
-                <input type="password" id="senha" placeholder="Sua senha" required>
-            </div>
-            <button type="submit" class="btn" id="btnLogin">Entrar no Sistema</button>
-        </form>
-
-        <a href="cadastro.html" class="link-cadastro">Não tem conta? Cadastre-se aqui</a>
+  <!-- Visual -->
+  <div class="auth-visual">
+    <div class="auth-visual-bg"></div>
+    <div class="auth-visual-overlay"></div>
+    <div class="auth-visual-content">
+      <a href="index.html" class="auth-logo">
+        <span class="brand-main">Inventário de Imóveis</span>
+        <span class="brand-sub">Sistema de Gestão</span>
+      </a>
+      <div class="auth-visual-quote">
+        <blockquote>
+          "O imóvel certo, na hora certa,<br>começa com a gestão certa."
+        </blockquote>
+        <cite>Plataforma de Gestão Imobiliária</cite>
+      </div>
     </div>
+  </div>
 
-    <script>
-        document.getElementById('formLogin').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btnLogin');
-            const msgErro = document.getElementById('msgErro');
+  <!-- Form -->
+  <div class="auth-form-panel">
+    <div class="auth-form-inner">
+      <p class="auth-eyebrow">Acesso ao sistema</p>
+      <h1 class="auth-title">Bem-vindo</h1>
+      <p class="auth-subtitle">Entre com suas credenciais para acessar o painel de gestão.</p>
 
-            msgErro.style.display = 'none';
-            btn.disabled = true;
-            btn.innerText = 'Entrando...';
+      <div class="alert alert-error" id="msgErro"></div>
 
-            const dados = {
-                email: document.getElementById('email').value.trim(),
-                senha: document.getElementById('senha').value
-            };
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" id="email" placeholder="seu@email.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" id="senha" placeholder="••••••••" autocomplete="current-password">
+      </div>
 
-            try {
-                const resp = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dados)
-                });
+      <button class="btn btn-gold btn-full" id="btnLogin" onclick="login()" style="margin-top:8px">
+        Entrar no sistema
+      </button>
 
-                const res = await resp.json();
+      <div class="auth-divider"></div>
 
-                if (res.ok) {
-                    localStorage.setItem('usuarioLogado', res.nome);
-                    localStorage.setItem('emailLogado', res.email);
-                    window.location.href = 'dashboard.html';
-                } else {
-                    msgErro.innerText = '✗ ' + (res.error || 'E-mail ou senha incorretos.');
-                    msgErro.style.display = 'block';
-                }
-            } catch (err) {
-                msgErro.innerText = '✗ Erro de conexão com o servidor.';
-                msgErro.style.display = 'block';
-            } finally {
-                btn.disabled = false;
-                btn.innerText = 'Entrar no Sistema';
-            }
-        };
-    </script>
+      <p class="auth-footer-link">
+        Não tem conta? <a href="cadastro.html">Cadastre-se gratuitamente</a>
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // Enter para submit
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+  async function login() {
+    const btn = document.getElementById('btnLogin');
+    const msgErro = document.getElementById('msgErro');
+    msgErro.style.display = 'none';
+
+    const email = document.getElementById('email').value.trim();
+    const senha = document.getElementById('senha').value;
+
+    if (!email || !senha) {
+      msgErro.textContent = 'Preencha e-mail e senha para continuar.';
+      msgErro.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Verificando...';
+
+    try {
+      const res  = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha })
+      });
+      const data = await res.json();
+
+      if (data.ok) {
+        localStorage.setItem('usuarioLogado', data.nome);
+        localStorage.setItem('emailLogado', data.email);
+        window.location.href = 'dashboard.html';
+      } else {
+        msgErro.textContent = data.error || 'E-mail ou senha incorretos.';
+        msgErro.style.display = 'block';
+      }
+    } catch {
+      msgErro.textContent = 'Erro de conexão com o servidor. Tente novamente.';
+      msgErro.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Entrar no sistema';
+    }
+  }
+</script>
+
 </body>
 </html>

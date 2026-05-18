@@ -1,189 +1,292 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Criar Conta</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(rgba(47,34,23,0.72), rgba(47,34,23,0.72)),
-                        url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-        }
-        .card {
-            background: white;
-            padding: 45px 40px;
-            border-radius: 24px;
-            width: 420px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.35);
-            text-align: center;
-        }
-        h2 {
-            font-family: 'Playfair Display', serif;
-            color: #3b2a1a;
-            font-size: 28px;
-            margin-bottom: 8px;
-        }
-        .subtitle {
-            color: #999;
-            font-size: 13px;
-            margin-bottom: 30px;
-        }
-        .form-group {
-            text-align: left;
-            margin-bottom: 16px;
-        }
-        label {
-            display: block;
-            font-size: 12px;
-            font-weight: 500;
-            color: #8b5e3c;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        input {
-            width: 100%;
-            padding: 13px 16px;
-            border: 1.5px solid #e8e0d8;
-            border-radius: 10px;
-            box-sizing: border-box;
-            outline: none;
-            background: #faf8f6;
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
-            color: #333;
-            transition: border-color 0.2s;
-        }
-        input:focus { border-color: #b08968; background: white; }
-        .btn {
-            width: 100%;
-            padding: 15px;
-            background: #b08968;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-family: 'Poppins', sans-serif;
-            cursor: pointer;
-            margin-top: 8px;
-            font-weight: 500;
-            transition: background 0.2s, transform 0.1s;
-        }
-        .btn:hover { background: #9a7455; transform: translateY(-1px); }
-        .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
-        .link-login {
-            color: #b08968;
-            text-decoration: none;
-            display: block;
-            margin-top: 20px;
-            font-size: 13px;
-        }
-        .link-login:hover { text-decoration: underline; }
-        .msg-erro {
-            background: #fde8e8;
-            color: #c0392b;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            margin-bottom: 16px;
-            display: none;
-            text-align: left;
-        }
-        .msg-ok {
-            background: #e8f5e9;
-            color: #27ae60;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            margin-bottom: 16px;
-            display: none;
-            text-align: left;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criar Conta — Inventário de Imóveis</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: var(--ink); }
+
+    .auth-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* Visual lado esquerdo */
+    .auth-visual {
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-visual-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1200&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+    }
+    .auth-visual-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        160deg,
+        rgba(26,20,16,0.88) 0%,
+        rgba(26,20,16,0.60) 100%
+      );
+    }
+    .auth-visual-content {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 44px;
+    }
+    .auth-logo { text-decoration: none; }
+    .auth-logo .brand-main {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      color: var(--gold-light);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+    .auth-logo .brand-sub {
+      display: block;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+
+    /* Steps visuais */
+    .auth-steps {
+      margin-top: auto;
+    }
+    .auth-steps h3 {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 24px;
+    }
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .step-dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(201,169,110,0.15);
+      border: 1px solid rgba(201,169,110,0.35);
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-text strong {
+      display: block;
+      font-size: 13.5px;
+      color: var(--cream);
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    .step-text span { font-size: 12px; color: var(--fog); }
+
+    /* Form painel */
+    .auth-form-panel {
+      background: var(--deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 72px;
+      overflow-y: auto;
+    }
+    .auth-form-inner { width: 100%; max-width: 400px; }
+
+    .auth-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 10px;
+    }
+    .auth-title {
+      font-size: 34px;
+      color: var(--gold-light);
+      margin-bottom: 6px;
+      font-weight: 300;
+    }
+    .auth-subtitle {
+      font-size: 13.5px;
+      color: var(--fog);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .auth-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,169,110,0.2), transparent);
+      margin: 24px 0;
+    }
+
+    .auth-footer-link {
+      text-align: center;
+      font-size: 13px;
+      color: var(--fog);
+    }
+    .auth-footer-link a {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color var(--transition);
+    }
+    .auth-footer-link a:hover { color: var(--gold-light); }
+
+    .btn-full { width: 100%; justify-content: center; padding: 14px; font-size: 14px; }
+  </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Criar Conta</h2>
-        <p class="subtitle">Preencha os dados para acessar o sistema</p>
 
-        <div class="msg-erro" id="msgErro"></div>
-        <div class="msg-ok" id="msgOk"></div>
+<div class="auth-shell">
 
-        <form id="formCadastro">
-            <div class="form-group">
-                <label>Nome Completo</label>
-                <input type="text" id="nome" placeholder="Seu nome completo" required>
-            </div>
-            <div class="form-group">
-                <label>E-mail</label>
-                <input type="email" id="email" placeholder="seu@email.com" required>
-            </div>
-            <div class="form-group">
-                <label>Usuário</label>
-                <input type="text" id="usuario" placeholder="Nome de usuário" required>
-            </div>
-            <div class="form-group">
-                <label>Senha</label>
-                <input type="password" id="senha" placeholder="Mínimo 6 caracteres" required>
-            </div>
-            <button type="submit" class="btn" id="btnCadastrar">Criar Conta</button>
-        </form>
-
-        <a href="login.html" class="link-login">Já possui acesso? Faça login aqui</a>
+  <!-- Visual -->
+  <div class="auth-visual">
+    <div class="auth-visual-bg"></div>
+    <div class="auth-visual-overlay"></div>
+    <div class="auth-visual-content">
+      <a href="index.html" class="auth-logo">
+        <span class="brand-main">Inventário de Imóveis</span>
+        <span class="brand-sub">Sistema de Gestão</span>
+      </a>
+      <div class="auth-steps">
+        <h3>Como funciona</h3>
+        <div class="step-item">
+          <div class="step-dot">1</div>
+          <div class="step-text">
+            <strong>Crie sua conta</strong>
+            <span>Preencha seus dados em menos de 1 minuto</span>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-dot">2</div>
+          <div class="step-text">
+            <strong>Acesse o painel</strong>
+            <span>Visualize e gerencie todo o seu portfólio</span>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-dot">3</div>
+          <div class="step-text">
+            <strong>Cadastre seus imóveis</strong>
+            <span>Localização, estado e valor de mercado</span>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        document.getElementById('formCadastro').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btnCadastrar');
-            const msgErro = document.getElementById('msgErro');
-            const msgOk = document.getElementById('msgOk');
+  <!-- Form -->
+  <div class="auth-form-panel">
+    <div class="auth-form-inner">
+      <p class="auth-eyebrow">Novo cadastro</p>
+      <h1 class="auth-title">Criar conta</h1>
+      <p class="auth-subtitle">Preencha as informações abaixo para acessar o sistema.</p>
 
-            msgErro.style.display = 'none';
-            msgOk.style.display = 'none';
-            btn.disabled = true;
-            btn.innerText = 'Criando conta...';
+      <div class="alert alert-error" id="msgErro"></div>
+      <div class="alert alert-ok"    id="msgOk"></div>
 
-            const dados = {
-                nome: document.getElementById('nome').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                login: document.getElementById('usuario').value.trim(),
-                senha: document.getElementById('senha').value
-            };
+      <div class="form-group">
+        <label>Nome Completo</label>
+        <input type="text" id="nome" placeholder="Seu nome completo" autocomplete="name">
+      </div>
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" id="email" placeholder="seu@email.com" autocomplete="email">
+      </div>
+      <div class="form-row form-row-2">
+        <div class="form-group">
+          <label>Usuário</label>
+          <input type="text" id="usuario" placeholder="nome.usuario">
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" id="senha" placeholder="Mín. 6 caracteres">
+        </div>
+      </div>
 
-            try {
-                const resp = await fetch('/api/registrar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dados)
-                });
+      <button class="btn btn-gold btn-full" id="btnCadastrar" onclick="cadastrar()">
+        Criar minha conta
+      </button>
 
-                const res = await resp.json();
+      <div class="auth-divider"></div>
 
-                if (res.ok) {
-                    msgOk.innerText = '✓ Conta criada com sucesso! Redirecionando...';
-                    msgOk.style.display = 'block';
-                    setTimeout(() => window.location.href = 'login.html', 1500);
-                } else {
-                    msgErro.innerText = '✗ ' + (res.error || 'Erro ao cadastrar.');
-                    msgErro.style.display = 'block';
-                }
-            } catch (err) {
-                msgErro.innerText = '✗ Erro de conexão com o servidor.';
-                msgErro.style.display = 'block';
-            } finally {
-                btn.disabled = false;
-                btn.innerText = 'Criar Conta';
-            }
-        };
-    </script>
+      <p class="auth-footer-link">
+        Já possui acesso? <a href="login.html">Fazer login</a>
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') cadastrar(); });
+
+  async function cadastrar() {
+    const btn = document.getElementById('btnCadastrar');
+    const msgErro = document.getElementById('msgErro');
+    const msgOk   = document.getElementById('msgOk');
+    msgErro.style.display = 'none';
+    msgOk.style.display   = 'none';
+
+    const dados = {
+      nome:  document.getElementById('nome').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      login: document.getElementById('usuario').value.trim(),
+      senha: document.getElementById('senha').value
+    };
+
+    if (!dados.nome || !dados.email || !dados.login || !dados.senha) {
+      msgErro.textContent = 'Todos os campos são obrigatórios.';
+      msgErro.style.display = 'block';
+      return;
+    }
+    if (dados.senha.length < 6) {
+      msgErro.textContent = 'A senha deve ter pelo menos 6 caracteres.';
+      msgErro.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Criando conta...';
+
+    try {
+      const res  = await fetch('/api/registrar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+      });
+      const data = await res.json();
+
+      if (data.ok) {
+        msgOk.textContent = '✓ Conta criada com sucesso! Redirecionando...';
+        msgOk.style.display = 'block';
+        setTimeout(() => window.location.href = 'login.html', 1600);
+      } else {
+        msgErro.textContent = data.error || 'Erro ao criar conta.';
+        msgErro.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Criar minha conta';
+      }
+    } catch {
+      msgErro.textContent = 'Erro de conexão com o servidor.';
+      msgErro.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Criar minha conta';
+    }
+  }
+</script>
+
 </body>
 </html>

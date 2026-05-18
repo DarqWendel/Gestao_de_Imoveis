@@ -1,103 +1,177 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Painel de Controle - Inventário</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
-    <style>
-        .dashboard-header {
-            background: #2f2217;
-            padding: 20px 80px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-        }
-        .welcome-section {
-            padding: 60px 80px;
-            background: #f8f6f3;
-            text-align: center;
-        }
-        .welcome-section h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 40px;
-            color: #3b2a1a;
-        }
-        .user-name { color: #c79a6b; }
-        
-        .actions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 40px 80px;
-        }
-        .action-card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-            border: 1px solid #eee;
-        }
-        .action-card:hover {
-            transform: translateY(-5px);
-            border-color: #c79a6b;
-        }
-        .btn-logout {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel — Inventário de Imóveis</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: var(--cream); }
+
+    .dash-hero {
+      background: var(--ink);
+      padding: 56px 48px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    .dash-hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 360px; height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .dash-hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,169,110,0.25), transparent);
+    }
+    .dash-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 10px;
+    }
+    .dash-hero h1 { font-size: clamp(28px,3vw,40px); color: var(--cream); font-weight: 300; }
+    .dash-hero h1 span { color: var(--gold-light); font-style: italic; }
+    .dash-meta { display: flex; gap: 24px; margin-top: 20px; flex-wrap: wrap; }
+    .dash-meta-item { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--fog); }
+    .dash-meta-item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold-dim); }
+
+    .dash-content { padding: 48px; max-width: 1100px; margin: 0 auto; }
+
+    .section-label {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--gold-dim); margin-bottom: 20px;
+    }
+    .section-label::before { content: ''; width: 20px; height: 1px; background: var(--gold-dim); }
+
+    .modules-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 20px; }
+
+    .module-card {
+      background: white; border: 1px solid var(--cream-dim);
+      border-radius: var(--radius); padding: 32px 28px;
+      cursor: pointer; text-decoration: none; display: block;
+      transition: var(--transition); position: relative; overflow: hidden;
+    }
+    .module-card::after {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+      background: linear-gradient(to bottom, var(--gold), var(--gold-light));
+      transform: scaleY(0); transform-origin: bottom; transition: transform 0.35s ease;
+    }
+    .module-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: rgba(201,169,110,0.3); }
+    .module-card:hover::after { transform: scaleY(1); }
+
+    .module-icon {
+      width: 48px; height: 48px; background: var(--cream); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 18px; transition: var(--transition);
+    }
+    .module-card:hover .module-icon { background: var(--ink); }
+    .module-card h3 { font-size: 18px; color: var(--ink); margin-bottom: 8px; font-weight: 500; }
+    .module-card p { font-size: 13px; color: #7a6a5a; line-height: 1.65; }
+    .module-arrow { position: absolute; top: 28px; right: 24px; font-size: 18px; color: var(--cream-dim); transition: var(--transition); }
+    .module-card:hover .module-arrow { color: var(--gold); transform: translate(4px,-4px); }
+    .module-tag {
+      display: inline-block; font-size: 10px; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 3px 10px; border-radius: 20px;
+      background: var(--cream); color: var(--gold-dim); border: 1px solid var(--cream-dim); margin-bottom: 12px;
+    }
+
+    .dash-activity { margin-top: 48px; background: white; border: 1px solid var(--cream-dim); border-radius: var(--radius); overflow: hidden; }
+    .activity-header { padding: 20px 24px; border-bottom: 1px solid var(--cream-dim); display: flex; justify-content: space-between; align-items: center; }
+    .activity-header h3 { font-size: 16px; color: var(--ink); font-weight: 500; }
+    .activity-empty { padding: 40px 24px; text-align: center; color: var(--fog); font-size: 13.5px; }
+  </style>
 </head>
 <body>
 
-    <header class="dashboard-header">
-        <div class="logo">Sistema <span>Premium</span></div>
-        <button class="btn-logout" onclick="logout()">Sair</button>
-    </header>
+<header class="navbar">
+  <a href="dashboard.html" class="navbar-brand">
+    <span class="brand-main">Inventário de Imóveis</span>
+    <span class="brand-sub">Sistema de Gestão</span>
+  </a>
+  <ul class="navbar-nav">
+    <li class="nav-item"><a href="dashboard.html" class="active">Início</a></li>
+    <li class="nav-item nav-dropdown">
+      <span>Cadastros <span class="caret">▾</span></span>
+      <div class="dropdown-panel">
+        <a href="usuarios.html" class="active">Usuários</a>
+      </div>
+    </li>
+    <li class="nav-item"><a href="#">Sobre</a></li>
+    <li class="nav-item"><a href="#">Serviços</a></li>
+    <li class="nav-item"><a href="#">Contato</a></li>
+    <li class="nav-item"><a href="#" onclick="sair()" class="btn-nav-sair">Sair</a></li>
+  </ul>
+</header>
 
-    <section class="welcome-section">
-        <h1>Olá, <span id="nomeUsuario" class="user-name">Usuário</span>!</h1>
-        <p>O que você deseja gerenciar hoje?</p>
-    </section>
+<div class="page-wrapper">
+  <div class="dash-hero">
+    <p class="dash-eyebrow">Painel de Controle</p>
+    <h1>Olá, <span id="nomeUsuario">Usuário</span></h1>
+    <div class="dash-meta">
+      <div class="dash-meta-item"><span class="dot"></span><span id="dataHoje"></span></div>
+      <div class="dash-meta-item"><span class="dot"></span>Sistema ativo</div>
+    </div>
+  </div>
 
-    <div class="actions-grid">
-        <div class="action-card" onclick="alert('Indo para lista de imóveis...')">
-            <h3>🏢 Meus Imóveis</h3>
-            <p>Visualize todos os itens cadastrados.</p>
-        </div>
-        <div class="action-card" onclick="window.location.href='cadastrarImovel.html'">
-            <h3>➕ Novo Registro</h3>
-            <p>Adicione um novo imóvel ao inventário.</p>
-        </div>
-        <div class="action-card" onclick="window.location.href='usuarios.html'">
-            <h3>👥 Usuários</h3>
-            <p>Gerencie quem tem acesso ao sistema.</p>
-        </div>
+  <div class="dash-content">
+    <p class="section-label">Módulos do sistema</p>
+    <div class="modules-grid">
+      <a href="usuarios.html" class="module-card">
+        <span class="module-tag">Cadastros</span>
+        <div class="module-icon">👥</div>
+        <span class="module-arrow">↗</span>
+        <h3>Usuários</h3>
+        <p>Gerencie os usuários com acesso ao sistema, perfis e permissões.</p>
+      </a>
+      <a href="cadastrarImovel.html" class="module-card">
+        <span class="module-tag">Imóveis</span>
+        <div class="module-icon">➕</div>
+        <span class="module-arrow">↗</span>
+        <h3>Novo Imóvel</h3>
+        <p>Adicione uma nova propriedade ao inventário com todos os detalhes.</p>
+      </a>
+      <a href="#" class="module-card" onclick="alert('Em breve...')">
+        <span class="module-tag">Imóveis</span>
+        <div class="module-icon">🏢</div>
+        <span class="module-arrow">↗</span>
+        <h3>Meus Imóveis</h3>
+        <p>Visualize e gerencie todo o portfólio de propriedades cadastradas.</p>
+      </a>
     </div>
 
-    <script>
-    
-        const nome = localStorage.getItem('usuarioLogado');
+    <div class="dash-activity">
+      <div class="activity-header">
+        <h3>Atividade Recente</h3>
+      </div>
+      <div class="activity-empty">Nenhuma atividade registrada ainda.</div>
+    </div>
+  </div>
+</div>
 
-       
-        if (!nome) {
-            window.location.href = 'login.html';
-        } else {
-            document.getElementById('nomeUsuario').innerText = nome;
-        }
+<footer class="site-footer">
+  <p>© 2026 <span>Inventário de Imóveis</span> — Sistema de Gestão</p>
+</footer>
 
-        function logout() {
-            localStorage.removeItem('usuarioLogado'); // Limpa a "sessão"
-            window.location.href = 'login.html';
-        }
-    </script>
+<script>
+  const nome = localStorage.getItem('usuarioLogado');
+  if (!nome) { window.location.href = 'login.html'; }
+  else { document.getElementById('nomeUsuario').textContent = nome; }
+  const opts = { weekday:'long', day:'numeric', month:'long', year:'numeric' };
+  document.getElementById('dataHoje').textContent = new Date().toLocaleDateString('pt-BR', opts);
+  function sair() {
+    localStorage.removeItem('usuarioLogado');
+    localStorage.removeItem('emailLogado');
+    window.location.href = 'login.html';
+  }
+</script>
 </body>
 </html>

@@ -7,7 +7,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Pool de conexões com SSL e timeout configurado
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT),
@@ -24,7 +23,6 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-// Rota de teste
 app.get('/api/ping', async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT 1 as ok');
@@ -34,7 +32,6 @@ app.get('/api/ping', async (req, res) => {
     }
 });
 
-// Criar tabela se não existir
 async function initDB() {
     try {
         await pool.query(`
@@ -44,9 +41,14 @@ async function initDB() {
                 email VARCHAR(255) NOT NULL UNIQUE,
                 login VARCHAR(255) NOT NULL UNIQUE,
                 senha VARCHAR(255) NOT NULL,
+                perfil VARCHAR(100) DEFAULT 'Usuário',
                 criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
+        // Adicionar coluna perfil se não existir (para tabelas já criadas)
+        await pool.query(`
+            ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS perfil VARCHAR(100) DEFAULT 'Usuário'
+        `).catch(() => {}); // ignora erro se já existir
         console.log('Tabela usuarios verificada/criada com sucesso');
     } catch (err) {
         console.error('Erro ao criar tabela:', err.message);
@@ -55,58 +57,132 @@ async function initDB() {
 
 initDB();
 
-// Cadastro
+// ─── AUTH ────────────────────────────────────────────────
+
 app.post('/api/registrar', async (req, res) => {
     const { nome, email, login, senha } = req.body;
-
-    if (!nome || !email || !login || !senha) {
+    if (!nome || !email || !login || !senha)
         return res.status(400).json({ ok: false, error: 'Todos os campos são obrigatórios.' });
-    }
-
     try {
-        // Verificar se email ou login já existe
         const [existe] = await pool.query(
-            'SELECT id FROM usuarios WHERE email = ? OR login = ?',
-            [email, login]
+            'SELECT id FROM usuarios WHERE email = ? OR login = ?', [email, login]
         );
-
-        if (existe.length > 0) {
+        if (existe.length > 0)
             return res.status(409).json({ ok: false, error: 'E-mail ou usuário já cadastrado.' });
-        }
-
         await pool.query(
-            'INSERT INTO usuarios (nome, email, login, senha) VALUES (?, ?, ?, ?)',
-            [nome, email, login, senha]
+            'INSERT INTO usuarios (nome, email, login, senha, perfil) VALUES (?, ?, ?, ?, ?)',
+            [nome, email, login, senha, 'Administrador']
         );
-
         res.json({ ok: true, message: 'Conta criada com sucesso!' });
     } catch (err) {
-        console.error('Erro no cadastro:', err.message);
         res.status(500).json({ ok: false, error: err.message });
     }
 });
 
-// Login
 app.post('/api/login', async (req, res) => {
     const { email, senha } = req.body;
-
-    if (!email || !senha) {
+    if (!email || !senha)
         return res.status(400).json({ ok: false, error: 'E-mail e senha são obrigatórios.' });
-    }
-
     try {
         const [rows] = await pool.query(
-            'SELECT * FROM usuarios WHERE email = ? AND senha = ?',
-            [email, senha]
+            'SELECT * FROM usuarios WHERE email = ? AND senha = ?', [email, senha]
         );
-
-        if (rows.length > 0) {
+        if (rows.length > 0)
             res.json({ ok: true, nome: rows[0].nome, email: rows[0].email });
-        } else {
+        else
             res.status(401).json({ ok: false, error: 'E-mail ou senha incorretos.' });
-        }
     } catch (err) {
-        console.error('Erro no login:', err.message);
+        res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+// ─── USUÁRIOS CRUD ───────────────────────────────────────
+
+// Listar todos
+app.get('/api/usuarios', async (req, res) => {
+    try {
+        const [rows] = await pool.query(
+            'SELECT id, nome, email, login, perfil, criado_em FROM usuarios ORDER BY id ASC'
+        );
+        res.json({ ok: true, data: rows });
+    } catch (err) {
+        res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+// Buscar por ID
+app.get('/api/usuarios/:id', async (req, res) => {
+    try {
+        const [rows] = await pool.query(
+            'SELECT id, nome, email, login, perfil FROM usuarios WHERE id = ?',
+            [req.params.id]
+        );
+        if (rows.length === 0)
+            return res.status(404).json({ ok: false, error: 'Usuário não encontrado.' });
+        res.json({ ok: true, data: rows[0] });
+    } catch (err) {
+        res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+// Incluir
+app.post('/api/usuarios', async (req, res) => {
+    const { nome, email, login, senha, perfil } = req.body;
+    if (!nome || !email || !login || !senha)
+        return res.status(400).json({ ok: false, error: 'Campos obrigatórios: nome, email, login, senha.' });
+    try {
+        const [existe] = await pool.query(
+            'SELECT id FROM usuarios WHERE email = ? OR login = ?', [email, login]
+        );
+        if (existe.length > 0)
+            return res.status(409).json({ ok: false, error: 'E-mail ou login já cadastrado.' });
+        const [result] = await pool.query(
+            'INSERT INTO usuarios (nome, email, login, senha, perfil) VALUES (?, ?, ?, ?, ?)',
+            [nome, email, login, senha, perfil || 'Usuário']
+        );
+        res.json({ ok: true, id: result.insertId, message: 'Usuário cadastrado com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+// Editar
+app.put('/api/usuarios/:id', async (req, res) => {
+    const { nome, email, login, senha, perfil } = req.body;
+    if (!nome || !email || !login)
+        return res.status(400).json({ ok: false, error: 'Campos obrigatórios: nome, email, login.' });
+    try {
+        const [existe] = await pool.query(
+            'SELECT id FROM usuarios WHERE (email = ? OR login = ?) AND id != ?',
+            [email, login, req.params.id]
+        );
+        if (existe.length > 0)
+            return res.status(409).json({ ok: false, error: 'E-mail ou login já em uso por outro usuário.' });
+        let sql, params;
+        if (senha) {
+            sql = 'UPDATE usuarios SET nome=?, email=?, login=?, senha=?, perfil=? WHERE id=?';
+            params = [nome, email, login, senha, perfil || 'Usuário', req.params.id];
+        } else {
+            sql = 'UPDATE usuarios SET nome=?, email=?, login=?, perfil=? WHERE id=?';
+            params = [nome, email, login, perfil || 'Usuário', req.params.id];
+        }
+        const [result] = await pool.query(sql, params);
+        if (result.affectedRows === 0)
+            return res.status(404).json({ ok: false, error: 'Usuário não encontrado.' });
+        res.json({ ok: true, message: 'Usuário atualizado com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+// Excluir
+app.delete('/api/usuarios/:id', async (req, res) => {
+    try {
+        const [result] = await pool.query('DELETE FROM usuarios WHERE id = ?', [req.params.id]);
+        if (result.affectedRows === 0)
+            return res.status(404).json({ ok: false, error: 'Usuário não encontrado.' });
+        res.json({ ok: true, message: 'Usuário excluído com sucesso!' });
+    } catch (err) {
         res.status(500).json({ ok: false, error: err.message });
     }
 });
