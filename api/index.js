@@ -254,9 +254,9 @@ app.post('/api/imoveis', async (req, res) => {
                 endereco,
                 valor     || null,
                 area      || null,
-                proprietario_id || null,
+                null,
                 imovel_tipo_id,
-                proprietario_id || 1
+                null
             ]
         );
         res.json({ ok: true, id: result.insertId, message: 'Imóvel cadastrado com sucesso!' });
@@ -280,9 +280,9 @@ app.put('/api/imoveis/:id', async (req, res) => {
                 endereco,
                 valor     || null,
                 area      || null,
-                proprietario_id || null,
+                null,
                 imovel_tipo_id,
-                proprietario_id || 1,
+                null,
                 req.params.id
             ]
         );
