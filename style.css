@@ -125,12 +125,16 @@ h1, h2, h3 {
 .dropdown-panel {
   display: none;
   position: absolute;
-  top: calc(100% + 10px);
+  top: 100%;
   left: 0;
+  padding-top: 10px; /* espaço visual sem gap de hover */
+  min-width: 180px;
+  z-index: 999;
+}
+.dropdown-panel-inner {
   background: var(--deep);
   border: 1px solid rgba(201,169,110,0.18);
   border-radius: var(--radius);
-  min-width: 180px;
   overflow: hidden;
   box-shadow: var(--shadow);
 }
