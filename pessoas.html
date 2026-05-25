@@ -3,22 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Imóveis — Inventário de Imóveis</title>
+  <title>Pessoas — Inventário de Imóveis</title>
   <link rel="stylesheet" href="style.css">
   <style>
     body { background: var(--cream); }
 
-    .page-header {
-      background: var(--ink); padding: 36px 48px;
-      border-bottom: 1px solid rgba(201,169,110,0.15);
-    }
+    .page-header { background: var(--ink); padding: 36px 48px; border-bottom: 1px solid rgba(201,169,110,0.15); }
     .breadcrumb { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold-dim); margin-bottom: 8px; }
     .breadcrumb a { color: var(--gold-dim); text-decoration: none; }
     .breadcrumb a:hover { color: var(--gold); }
     .breadcrumb span { margin: 0 8px; opacity: 0.4; }
     .page-header h1 { font-size: 28px; color: var(--gold-light); font-weight: 300; }
 
-    .page-content { padding: 36px 48px; max-width: 1200px; margin: 0 auto; }
+    .page-content { padding: 36px 48px; max-width: 1100px; margin: 0 auto; }
 
     .table-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--cream-dim); }
     .table-toolbar { display: flex; gap: 8px; padding: 18px 20px; border-bottom: 1px solid var(--cream-dim); background: white; flex-wrap: wrap; align-items: center; }
@@ -35,21 +32,24 @@
     tbody tr:hover td { background: #fdf8f2; }
     tbody tr.selected td { background: #fdf5e9; }
     td.col-id { color: #b0a090; font-size: 12.5px; }
-    td.col-valor { font-weight: 600; color: #8a6500; }
     input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; accent-color: var(--gold); }
 
     .badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
-    .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--gold); }
-    .badge-tipo { background: #fdf3e3; color: #8a5a00; border: 1px solid #f0d89a; }
+    .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; }
+    .badge-pf { background: #e8f4fd; color: #1565a0; border: 1px solid #90caf9; }
+    .badge-pf::before { background: #2196f3; }
+    .badge-pj { background: #fdf3e3; color: #8a5a00; border: 1px solid #f0d89a; }
+    .badge-pj::before { background: var(--gold); }
+    .badge-outro { background: #edf7ed; color: #1a6b1a; border: 1px solid #a8d5a8; }
+    .badge-outro::before { background: #4caf50; }
 
     .table-empty { text-align: center; padding: 60px 20px; color: var(--fog); }
     .table-empty svg { width: 52px; height: 52px; margin: 0 auto 16px; display: block; opacity: 0.25; }
     .table-empty small { font-size: 12px; opacity: 0.6; margin-top: 4px; display: block; }
 
-    /* Modal */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(10,8,6,0.72); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
     .modal-overlay.open { display: flex; }
-    .modal { background: var(--deep); border: 1px solid rgba(201,169,110,0.2); border-radius: var(--radius-lg); padding: 36px; width: 100%; max-width: 560px; box-shadow: var(--shadow-lg); animation: modalIn 0.25s cubic-bezier(.4,0,.2,1); max-height: 90vh; overflow-y: auto; }
+    .modal { background: var(--deep); border: 1px solid rgba(201,169,110,0.2); border-radius: var(--radius-lg); padding: 36px; width: 100%; max-width: 520px; box-shadow: var(--shadow-lg); animation: modalIn 0.25s cubic-bezier(.4,0,.2,1); max-height: 90vh; overflow-y: auto; }
     @keyframes modalIn { from { transform: translateY(-16px) scale(.98); opacity:0; } to { transform:none; opacity:1; } }
     .modal-header { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(201,169,110,0.15); }
     .modal-header h2 { font-size: 22px; color: var(--gold-light); }
@@ -98,8 +98,8 @@
       <span>Cadastros <span class="caret">▾</span></span>
       <div class="dropdown-panel"><div class="dropdown-panel-inner">
         <a href="usuarios.html">Usuários</a>
-        <a href="imoveis.html" class="active">Imóveis</a>
-        <a href="pessoas.html">Pessoas</a>
+        <a href="imoveis.html">Imóveis</a>
+        <a href="pessoas.html" class="active">Pessoas</a>
       </div></div>
     </li>
     <li class="nav-item"><a href="#">Sobre</a></li>
@@ -111,8 +111,8 @@
 
 <div class="page-wrapper">
   <div class="page-header">
-    <p class="breadcrumb"><a href="dashboard.html">Painel</a><span>›</span>Cadastros<span>›</span>Imóveis</p>
-    <h1>Imóveis</h1>
+    <p class="breadcrumb"><a href="dashboard.html">Painel</a><span>›</span>Cadastros<span>›</span>Pessoas</p>
+    <h1>Pessoas</h1>
   </div>
 
   <div class="page-content">
@@ -131,11 +131,11 @@
           <tr>
             <th class="col-check"><input type="checkbox" id="checkAll" onchange="toggleAll(this)"></th>
             <th class="col-id">ID</th>
-            <th>Endereço</th>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Nascimento</th>
+            <th>Telefone</th>
             <th>Tipo</th>
-            <th>Proprietário</th>
-            <th>Área (m²)</th>
-            <th>Valor</th>
           </tr>
         </thead>
         <tbody id="tbody">
@@ -154,34 +154,34 @@
 <div class="modal-overlay" id="modalForm">
   <div class="modal">
     <div class="modal-header">
-      <h2 id="modalTitulo">Incluir Imóvel</h2>
-      <p id="modalDesc">Preencha os dados do imóvel.</p>
+      <h2 id="modalTitulo">Incluir Pessoa</h2>
+      <p id="modalDesc">Preencha os dados da pessoa.</p>
     </div>
     <div class="alert alert-error" id="msgErro"></div>
     <div class="alert alert-ok"   id="msgOk"></div>
 
     <div class="form-group">
-      <label>Endereço *</label>
-      <input type="text" id="fEndereco" placeholder="Rua, número, bairro, cidade">
+      <label>Nome Completo *</label>
+      <input type="text" id="fNome" placeholder="Nome completo">
     </div>
     <div class="form-row-2">
       <div class="form-group">
-        <label>Tipo de Imóvel</label>
+        <label>CPF *</label>
+        <input type="text" id="fCpf" placeholder="000.000.000-00" maxlength="14">
+      </div>
+      <div class="form-group">
+        <label>Nascimento</label>
+        <input type="date" id="fNascimento">
+      </div>
+    </div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label>Telefone</label>
+        <input type="text" id="fTelefone" placeholder="(00) 00000-0000" maxlength="20">
+      </div>
+      <div class="form-group">
+        <label>Tipo de Pessoa</label>
         <select id="fTipo"><option value="">Selecione</option></select>
-      </div>
-      <div class="form-group">
-        <label>Proprietário</label>
-        <select id="fProprietario"><option value="">Selecione</option></select>
-      </div>
-    </div>
-    <div class="form-row-2">
-      <div class="form-group">
-        <label>Área (m²)</label>
-        <input type="number" id="fArea" placeholder="0,00" min="0" step="0.01">
-      </div>
-      <div class="form-group">
-        <label>Valor (R$)</label>
-        <input type="number" id="fValor" placeholder="0,00" min="0" step="0.01">
       </div>
     </div>
 
@@ -210,27 +210,27 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  let imoveis = [], tipos = [], pessoas = [];
+  let pessoas = [], tipos = [];
   let selecionados = new Set(), modoEdicao = false, idEdicao = null;
 
   document.addEventListener('DOMContentLoaded', async () => {
     if (!localStorage.getItem('usuarioLogado')) { window.location.href = 'login.html'; return; }
-    await Promise.all([carregarTipos(), carregarPessoas()]);
+    await carregarTipos();
     await carregar();
   });
 
   async function carregar() {
     try {
-      const res = await fetch('/api/imoveis');
+      const res = await fetch('/api/pessoas');
       const data = await res.json();
-      if (data.ok) { imoveis = data.data; renderTabela(); }
+      if (data.ok) { pessoas = data.data; renderTabela(); }
       else emptyState('Erro: ' + (data.error || ''));
     } catch { emptyState('Erro de conexão.'); }
   }
 
   async function carregarTipos() {
     try {
-      const res = await fetch('/api/imovel-tipos');
+      const res = await fetch('/api/pessoa-tipos');
       const data = await res.json();
       if (data.ok) {
         tipos = data.data;
@@ -240,31 +240,39 @@
     } catch {}
   }
 
-  async function carregarPessoas() {
-    try {
-      const res = await fetch('/api/pessoas');
-      const data = await res.json();
-      if (data.ok) {
-        pessoas = data.data;
-        const sel = document.getElementById('fProprietario');
-        pessoas.forEach(p => sel.innerHTML += `<option value="${p.id}">${esc(p.nome)}</option>`);
-      }
-    } catch {}
+  function badgeTipo(tipo) {
+    if (!tipo) return '<span style="color:#b0a090">—</span>';
+    const lower = tipo.toLowerCase();
+    let cls = 'badge-outro';
+    if (lower.includes('física') || lower.includes('fisica') || lower === 'pf') cls = 'badge-pf';
+    else if (lower.includes('jurídica') || lower.includes('juridica') || lower === 'pj') cls = 'badge-pj';
+    return `<span class="badge ${cls}">${esc(tipo)}</span>`;
+  }
+
+  function formatarCpf(v) {
+    if (!v) return '—';
+    return v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+  }
+
+  function formatarData(v) {
+    if (!v) return '—';
+    const d = new Date(v);
+    return isNaN(d) ? v : d.toLocaleDateString('pt-BR');
   }
 
   function renderTabela() {
     const tbody = document.getElementById('tbody');
-    document.getElementById('toolbarInfo').textContent = imoveis.length + ' registro(s)';
-    if (!imoveis.length) { emptyState('Nenhum imóvel cadastrado.'); return; }
-    tbody.innerHTML = imoveis.map(im => `
-      <tr data-id="${im.id}" class="${selecionados.has(im.id) ? 'selected' : ''}">
-        <td class="col-check"><input type="checkbox" class="row-check" value="${im.id}" ${selecionados.has(im.id) ? 'checked' : ''} onchange="toggleSelect(${im.id}, this.checked)"></td>
-        <td class="col-id">${im.id}</td>
-        <td><strong style="font-weight:500">${esc(im.endereco)}</strong></td>
-        <td>${im.tipo ? `<span class="badge badge-tipo">${esc(im.tipo)}</span>` : '<span style="color:#b0a090">—</span>'}</td>
-        <td>${im.proprietario ? esc(im.proprietario) : '<span style="color:#b0a090">—</span>'}</td>
-        <td>${im.area ? parseFloat(im.area).toLocaleString('pt-BR') : '—'}</td>
-        <td class="col-valor">${im.valor ? 'R$ ' + parseFloat(im.valor).toLocaleString('pt-BR', {minimumFractionDigits:2}) : '—'}</td>
+    document.getElementById('toolbarInfo').textContent = pessoas.length + ' registro(s)';
+    if (!pessoas.length) { emptyState('Nenhuma pessoa cadastrada.'); return; }
+    tbody.innerHTML = pessoas.map(p => `
+      <tr data-id="${p.id}" class="${selecionados.has(p.id) ? 'selected' : ''}">
+        <td class="col-check"><input type="checkbox" class="row-check" value="${p.id}" ${selecionados.has(p.id) ? 'checked' : ''} onchange="toggleSelect(${p.id}, this.checked)"></td>
+        <td class="col-id">${p.id}</td>
+        <td><strong style="font-weight:500">${esc(p.nome)}</strong></td>
+        <td style="font-family:monospace;font-size:13px">${formatarCpf(p.cpf)}</td>
+        <td>${formatarData(p.nascimento)}</td>
+        <td>${p.telefone ? esc(p.telefone) : '<span style="color:#b0a090">—</span>'}</td>
+        <td>${badgeTipo(p.tipo)}</td>
       </tr>`).join('');
     document.querySelectorAll('#tbody tr[data-id]').forEach(tr =>
       tr.addEventListener('dblclick', () => { selecionarUnico(parseInt(tr.dataset.id)); abrirEditar(); })
@@ -273,7 +281,7 @@
   }
 
   function emptyState(msg) {
-    document.getElementById('tbody').innerHTML = `<tr><td colspan="7" class="table-empty"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><p>${msg}</p><small>Clique em "+ Incluir" para adicionar.</small></td></tr>`;
+    document.getElementById('tbody').innerHTML = `<tr><td colspan="7" class="table-empty"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg><p>${msg}</p><small>Clique em "+ Incluir" para adicionar.</small></td></tr>`;
     document.getElementById('toolbarInfo').textContent = '0 registros';
   }
 
@@ -311,40 +319,53 @@
 
   function abrirIncluir() {
     modoEdicao = false; idEdicao = null; limparForm();
-    document.getElementById('modalTitulo').textContent = 'Incluir Imóvel';
-    document.getElementById('modalDesc').textContent   = 'Preencha os dados do novo imóvel.';
+    document.getElementById('modalTitulo').textContent = 'Incluir Pessoa';
+    document.getElementById('modalDesc').textContent   = 'Preencha os dados da nova pessoa.';
     document.getElementById('modalForm').classList.add('open');
   }
 
   function abrirEditar() {
     if (selecionados.size !== 1) return;
-    const im = imoveis.find(x => x.id === [...selecionados][0]);
-    if (!im) return;
-    modoEdicao = true; idEdicao = im.id; limparForm();
-    // Busca dados completos pelo ID
-    fetch(`/api/imoveis/${im.id}`).then(r => r.json()).then(data => {
+    const p = pessoas.find(x => x.id === [...selecionados][0]);
+    if (!p) return;
+    modoEdicao = true; idEdicao = p.id; limparForm();
+    fetch(`/api/pessoas/${p.id}`).then(r => r.json()).then(data => {
       if (!data.ok) return;
       const d = data.data;
-      document.getElementById('fEndereco').value    = d.endereco || '';
-      document.getElementById('fTipo').value        = d.imovel_tipo_id || '';
-      document.getElementById('fProprietario').value= d.proprietario_id || '';
-      document.getElementById('fArea').value        = d.area || '';
-      document.getElementById('fValor').value       = d.valor || '';
+      document.getElementById('fNome').value       = d.nome || '';
+      document.getElementById('fCpf').value        = d.cpf || '';
+      document.getElementById('fNascimento').value = d.nascimento ? d.nascimento.split('T')[0] : '';
+      document.getElementById('fTelefone').value   = d.telefone || '';
+      document.getElementById('fTipo').value       = d.pessoa_tipo_id || '';
     });
-    document.getElementById('modalTitulo').textContent = 'Editar Imóvel';
-    document.getElementById('modalDesc').textContent   = 'Altere os dados do imóvel.';
+    document.getElementById('modalTitulo').textContent = 'Editar Pessoa';
+    document.getElementById('modalDesc').textContent   = 'Altere os dados da pessoa.';
     document.getElementById('modalForm').classList.add('open');
   }
 
   function fecharModal() { document.getElementById('modalForm').classList.remove('open'); limparForm(); }
 
   function limparForm() {
-    ['fEndereco','fArea','fValor'].forEach(id => document.getElementById(id).value = '');
+    ['fNome','fCpf','fNascimento','fTelefone'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('fTipo').value = '';
-    document.getElementById('fProprietario').value = '';
     document.getElementById('msgErro').style.display = 'none';
     document.getElementById('msgOk').style.display   = 'none';
   }
+
+  // Máscara CPF
+  document.getElementById('fCpf').addEventListener('input', function() {
+    let v = this.value.replace(/\D/g, '').substring(0, 11);
+    v = v.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    this.value = v;
+  });
+
+  // Máscara telefone
+  document.getElementById('fTelefone').addEventListener('input', function() {
+    let v = this.value.replace(/\D/g, '').substring(0, 11);
+    if (v.length <= 10) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+    else v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+    this.value = v;
+  });
 
   async function salvar() {
     const btn = document.getElementById('btnSalvar');
@@ -353,18 +374,19 @@
     msgErro.style.display = msgOk.style.display = 'none';
 
     const payload = {
-      endereco:       document.getElementById('fEndereco').value.trim(),
-      imovel_tipo_id: document.getElementById('fTipo').value || null,
-      proprietario_id:document.getElementById('fProprietario').value || null,
-      area:           parseFloat(document.getElementById('fArea').value) || null,
-      valor:          parseFloat(document.getElementById('fValor').value) || null
+      nome:           document.getElementById('fNome').value.trim(),
+      cpf:            document.getElementById('fCpf').value.replace(/\D/g,''),
+      nascimento:     document.getElementById('fNascimento').value || null,
+      telefone:       document.getElementById('fTelefone').value.trim() || null,
+      pessoa_tipo_id: document.getElementById('fTipo').value || null
     };
 
-    if (!payload.endereco) { msgErro.textContent = 'Endereço é obrigatório.'; msgErro.style.display = 'block'; return; }
+    if (!payload.nome || !payload.cpf) { msgErro.textContent = 'Nome e CPF são obrigatórios.'; msgErro.style.display = 'block'; return; }
+    if (payload.cpf.length !== 11) { msgErro.textContent = 'CPF inválido. Digite os 11 dígitos.'; msgErro.style.display = 'block'; return; }
 
     btn.disabled = true; btn.textContent = 'Salvando…';
     try {
-      const url    = modoEdicao ? `/api/imoveis/${idEdicao}` : '/api/imoveis';
+      const url    = modoEdicao ? `/api/pessoas/${idEdicao}` : '/api/pessoas';
       const method = modoEdicao ? 'PUT' : 'POST';
       const res  = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       const data = await res.json();
@@ -378,7 +400,7 @@
   }
 
   function confirmarExcluir() {
-    const desc = [...selecionados].map(id => { const im = imoveis.find(x => x.id === id); return im ? `"${im.endereco}"` : `ID ${id}`; }).join(', ');
+    const desc = [...selecionados].map(id => { const p = pessoas.find(x => x.id === id); return p ? `"${p.nome}"` : `ID ${id}`; }).join(', ');
     document.getElementById('nomeExcluir').textContent = desc;
     document.getElementById('modalConfirm').classList.add('open');
   }
@@ -386,9 +408,9 @@
   async function excluir() {
     const ids = [...selecionados]; fecharConfirm();
     try {
-      await Promise.all(ids.map(id => fetch(`/api/imoveis/${id}`, { method: 'DELETE' })));
+      await Promise.all(ids.map(id => fetch(`/api/pessoas/${id}`, { method: 'DELETE' })));
       await carregar(); selecionados.clear(); atualizarBotoes();
-      toast(ids.length > 1 ? `${ids.length} imóveis excluídos.` : 'Imóvel excluído!', 'ok');
+      toast(ids.length > 1 ? `${ids.length} pessoas excluídas.` : 'Pessoa excluída!', 'ok');
     } catch { toast('Erro ao excluir.', 'erro'); }
   }
 
