@@ -66,6 +66,26 @@ async function initDB() {
             )
         `);
 
+        // Migration: se a coluna se chama 'endereço' (com cedilha), renomeia para 'endereco'
+        try {
+            const [cols] = await pool.query(`SHOW COLUMNS FROM imoveis LIKE 'endere%'`);
+            const hasOld = cols.find(c => c.Field === 'endereço' || c.Field === 'endereco_old');
+            const hasNew = cols.find(c => c.Field === 'endereco');
+            if (hasOld && !hasNew) {
+                await pool.query(`ALTER TABLE imoveis CHANGE \`endereço\` endereco VARCHAR(200) NOT NULL`);
+                console.log('Migration: renomeada coluna endereço -> endereco');
+            }
+        } catch (migErr) {
+            console.warn('Migration imoveis (ignorada):', migErr.message);
+        }
+
+        // Migration: adicionar colunas faltantes em imoveis caso a tabela seja antiga
+        const imoveisCols = ['valor DECIMAL(19,2)', 'area DECIMAL(19,2)', 'proprietario_id INT', 'imovel_tipo_id INT'];
+        const imoveisColNames = ['valor', 'area', 'proprietario_id', 'imovel_tipo_id'];
+        for (let i = 0; i < imoveisColNames.length; i++) {
+            await pool.query(`ALTER TABLE imoveis ADD COLUMN IF NOT EXISTS ${imoveisCols[i]}`).catch(() => {});
+        }
+
         // Tipo de pessoa
         await pool.query(`
             CREATE TABLE IF NOT EXISTS pessoa_tipo (
@@ -86,6 +106,18 @@ async function initDB() {
                 criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
+
+        // Seed tipos de imóvel (se vazio)
+        try {
+            const [tiposImovel] = await pool.query('SELECT COUNT(*) as n FROM imovel_tipo');
+            if (tiposImovel[0].n === 0) {
+                await pool.query(`INSERT INTO imovel_tipo (descricao) VALUES ('Apartamento'), ('Casa'), ('Comercial'), ('Terreno'), ('Galpão'), ('Rural')`);
+            }
+            const [tiposPessoa] = await pool.query('SELECT COUNT(*) as n FROM pessoa_tipo');
+            if (tiposPessoa[0].n === 0) {
+                await pool.query(`INSERT INTO pessoa_tipo (descricao) VALUES ('Pessoa Física'), ('Pessoa Jurídica')`);
+            }
+        } catch (seedErr) { console.warn('Seed tipos (ignorado):', seedErr.message); }
 
         console.log('Tabelas verificadas/criadas com sucesso');
     } catch (err) {
