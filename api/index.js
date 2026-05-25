@@ -45,9 +45,6 @@ async function initDB() {
         `);
         await pool.query(`ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS perfil VARCHAR(100) DEFAULT 'Usuário'`).catch(() => {});
 
-        // DROP temporário para recriar tabela com colunas corretas
-        await pool.query(`DROP TABLE IF EXISTS imoveis`);
-
         // Tipo de imóvel
         await pool.query(`
             CREATE TABLE IF NOT EXISTS imovel_tipo (
